@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV ATS Builder — Juliette González</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/latin-400.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/latin-600.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/latin-700.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #eef0f4;
+    color: #1a1d23;
+  }
+
+  /* ===== App bar ===== */
+  .appbar {
+    position: sticky; top: 0; z-index: 50;
+    background: #14181f; color: #fff;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 20px; flex-wrap: wrap;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  }
+  .appbar .brand { font-weight: 700; font-size: 15px; letter-spacing: .2px; margin-right: auto; }
+  .appbar .brand span { color: #8ab4ff; }
+
+  .lang-switch {
+    display: flex; border: 1px solid #3a4150; border-radius: 8px; overflow: hidden;
+  }
+  .lang-switch button {
+    background: transparent; color: #cfd6e4; border: none;
+    padding: 7px 16px; font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .lang-switch button.active { background: #2f6fed; color: #fff; }
+  .lang-switch button:hover:not(.active) { background: #242b38; }
+
+  .btn {
+    border: none; border-radius: 8px; padding: 8px 16px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: transform .1s, box-shadow .15s, background .15s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: #2f6fed; color: #fff; }
+  .btn-primary:hover { background: #245cd6; }
+  .btn-ghost { background: #242b38; color: #cfd6e4; }
+  .btn-ghost:hover { background: #2f3746; }
+  .btn-danger { background: transparent; color: #ff8f8f; border: 1px solid #4a3038; }
+  .btn-danger:hover { background: #2a1d22; }
+
+  /* ===== Layout ===== */
+  .layout {
+    display: flex; gap: 24px; align-items: flex-start;
+    max-width: 1280px; margin: 0 auto; padding: 24px 20px 60px;
+  }
+  .cv-column { flex: 1; min-width: 0; display: flex; justify-content: center; }
+  .cv-column > div { width: 100%; min-width: 0; }
+
+  .edit-hint {
+    width: 210mm; max-width: 100%;
+    background: #fff8e1; border: 1px solid #ecd98a; color: #6b5900;
+    border-radius: 8px; padding: 10px 14px; font-size: 12.5px; line-height: 1.5;
+    margin: 0 auto 14px;
+  }
+
+  /* ===== CV page (ATS-safe: Arial, one column, black on white) ===== */
+  .cv-page {
+    background: #fff; color: #000;
+    width: 100%; max-width: 210mm; min-height: 297mm;
+    margin: 0 auto;
+    padding: 14mm 15mm;
+    box-shadow: 0 3px 18px rgba(20,24,31,.14);
+    border-radius: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5pt; line-height: 1.45;
+  }
+  .cv-page [contenteditable="true"]:hover { outline: 1px dashed #b9c6dd; outline-offset: 2px; }
+  .cv-page [contenteditable="true"]:focus { outline: 2px solid #2f6fed; outline-offset: 2px; background: #f4f8ff; }
+
+  .cv-header { text-align: center; margin-bottom: 14pt; }
+  .cv-name { font-size: 19pt; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; }
+  .cv-title { font-size: 11.5pt; font-weight: bold; margin-top: 3pt; color: #000; }
+  .cv-contact { font-size: 9.5pt; margin-top: 6pt; color: #111; }
+
+  .cv-section { margin-bottom: 12pt; }
+  .cv-section h2 {
+    font-size: 10.5pt; font-weight: bold; text-transform: uppercase;
+    letter-spacing: 1px; border-bottom: 1.2px solid #000;
+    padding-bottom: 2.5pt; margin-bottom: 6pt;
+  }
+  .cv-summary { text-align: justify; }
+  .cv-list { list-style: none; }
+  .cv-list li { margin-bottom: 3pt; padding-left: 12pt; position: relative; }
+  .cv-list li::before { content: "\2022"; position: absolute; left: 0; }
+  .cv-comp li strong { font-weight: bold; }
+
+  .cv-job { margin-bottom: 9pt; }
+  .cv-job-head { display: flex; justify-content: space-between; gap: 10pt; flex-wrap: wrap; }
+  .cv-job-role { font-weight: bold; }
+  .cv-job-meta { font-size: 10pt; white-space: nowrap; }
+  .cv-job ul { list-style: none; margin-top: 3pt; }
+  .cv-job ul li { margin-bottom: 2.5pt; padding-left: 12pt; position: relative; }
+  .cv-job ul li::before { content: "\2022"; position: absolute; left: 0; }
+
+  .cv-two { display: flex; justify-content: space-between; gap: 10pt; }
+
+  /* ===== Sidebar ===== */
+  .sidebar {
+    width: 330px; flex-shrink: 0;
+    position: sticky; top: 76px;
+    display: flex; flex-direction: column; gap: 16px;
+    max-height: calc(100vh - 100px); overflow-y: auto;
+    padding-right: 4px;
+    overflow-wrap: anywhere;
+  }
+  .card {
+    background: #fff; border-radius: 10px; padding: 18px;
+    box-shadow: 0 1px 6px rgba(20,24,31,.08);
+  }
+  .card h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .card .sub { font-size: 12px; color: #5c6575; margin-bottom: 12px; line-height: 1.5; }
+
+  .sugg-item {
+    display: flex; gap: 9px; align-items: flex-start;
+    padding: 7px 0; border-bottom: 1px solid #f0f2f6; font-size: 12.5px; line-height: 1.5;
+  }
+  .sugg-item:last-child { border-bottom: none; }
+  .sugg-item input[type="checkbox"] { margin-top: 3px; accent-color: #2f6fed; cursor: pointer; flex-shrink: 0; }
+  .sugg-item.done label { text-decoration: line-through; color: #9aa2b1; }
+  .sugg-item label { cursor: pointer; }
+
+  .export-steps { font-size: 12.5px; line-height: 1.7; color: #3a4150; }
+  .export-steps li { margin-left: 16px; margin-bottom: 4px; }
+  .badge {
+    display: inline-block; background: #e8f0fe; color: #1d4ed8;
+    font-size: 11px; font-weight: 600; border-radius: 20px; padding: 2px 10px; margin-bottom: 10px;
+  }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #14181f; color: #fff; font-size: 13px; font-weight: 600;
+    padding: 11px 22px; border-radius: 30px; opacity: 0;
+    transition: transform .3s ease, opacity .3s ease; z-index: 100; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1080px) {
+    .layout { flex-direction: column; align-items: stretch; }
+    .sidebar { width: 100%; max-width: 640px; position: static; max-height: none; margin: 0 auto; }
+  }
+
+  /* ===== Print / PDF export (ATS-clean) ===== */
+  @media print {
+    @page { size: A4; margin: 12mm 14mm; }
+    body { background: #fff; }
+    .appbar, .sidebar, .edit-hint, .toast { display: none !important; }
+    .layout { display: block; padding: 0; margin: 0; max-width: none; }
+    .cv-column { display: block; }
+    .cv-page {
+      width: 100%; min-height: 0; padding: 0; margin: 0;
+      box-shadow: none; border-radius: 0; font-size: 10.5pt;
+    }
+    .cv-page [contenteditable="true"]:hover,
+    .cv-page [contenteditable="true"]:focus { outline: none; background: transparent; }
+    .cv-job { margin-bottom: 7pt; }
+    .cv-job-head { break-after: avoid; }
+    .cv-job li { break-inside: avoid; }
+    .cv-keep { break-inside: avoid; }
+    .cv-section { margin-bottom: 10pt; }
+    .cv-section h2 { break-after: avoid; }
+    p, li { orphans: 2; widows: 2; }
+  }
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="brand" id="brandText">CV <span>ATS Builder</span> — Juliette González</div>
+
+  <div class="lang-switch" role="group" aria-label="Idioma">
+    <button id="btnES" onclick="setLang('es')">ES Español</button>
+    <button id="btnEN" onclick="setLang('en')">EN English</button>
+  </div>
+
+  <button class="btn btn-ghost" id="btnCopy" onclick="copyPlainText()">Copiar texto plano</button>
+  <button class="btn btn-primary" id="btnExport" onclick="exportPDF()">Exportar PDF</button>
+  <button class="btn btn-danger" id="btnReset" onclick="resetAll()">Reiniciar</button>
+</header>
+
+<div class="layout">
+  <div class="cv-column">
+    <div>
+      <div class="edit-hint" id="editHint">
+        ✏️ <strong>Modo edición activo:</strong> haz clic en cualquier texto del CV para modificarlo. Los cambios se guardan automáticamente en este navegador. Antes de exportar, revisa la lista de sugerencias →
+      </div>
+      <div class="cv-page" id="cvPage" contenteditable="true" spellcheck="true"></div>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="card">
+      <span class="badge" id="badgePending">Pendiente de confirmar</span>
+      <h3 id="suggTitle">Sugerencias (solo con datos reales)</h3>
+      <p class="sub" id="suggSub">Si Juliette no tiene el dato, la viñeta se queda sin cifra. Nunca inventar.</p>
+      <div id="suggList"></div>
+    </div>
+
+    <div class="card">
+      <h3 id="exportTitle">Cómo exportar un PDF limpio para ATS</h3>
+      <ol class="export-steps" id="exportSteps"></ol>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   DATA — CV verified content (no invented facts)
+   ============================================================ */
+const CV_DATA = {
+  en: {
+    name: "JULIETTE GONZÁLEZ",
+    title: "Strategic Sourcing Specialist",
+    contact: "+57 319 245 2444 | Juliette1716@gmail.com | Chía, Colombia | linkedin.com/in/juliette-gt",
+    sections: {
+      summary: "Professional Summary",
+      competencies: "Core Competencies",
+      skills: "Technical Skills",
+      experience: "Professional Experience",
+      education: "Education & Certifications",
+      languages: "Languages"
+    },
+    summaryText: "Strategic Sourcing Specialist with 8+ years of procurement experience across LATAM at Schneider Electric Colombia, covering regional spend management, supplier performance, compliance and cost optimization through SAP Ariba, Coupa and Power BI. Works cross-functionally with Sales, Finance and Marketing to optimize Total Cost of Ownership (TCO), quality and service levels. Background in international trade promotion and SME advisory with the Ministry of Foreign Affairs and SENA.",
+    competencies: [
+      ["Strategic Sourcing & Negotiation:", "RFx/RFP management, supplier segmentation, SLA design, contract enforcement, Total Cost of Ownership (TCO)"],
+      ["Supplier Relationship Management:", "performance monitoring, supplier risk assessment, compliance tracking"],
+      ["Data & Analytics:", "KPI dashboards, shopper insights"],
+      ["Stakeholder Engagement:", "cross-functional collaboration, public-private partnerships, FMCG & retail dynamics"]
+    ],
+    skills: ["SAP Ariba", "Coupa", "SAP (Iberian, MDG, B1)", "SSP-SRM", "Prism", "Power BI", "Advanced Excel", "Microsoft Office"],
+    jobs: [
+      {
+        role: "Trade Diplomacy Advisor (Contractor)",
+        company: "Ministry of Foreign Affairs – Colombia",
+        dates: "Jul 2025 – Dec 2025",
+        bullets: [
+          "Implemented the Coffee & Cocoa Diplomacy Strategy, positioning specialty coffees globally",
+          "Coordinated public-private partnerships with SMEs, government units and peace agreement institutions",
+          "Directed Colombia's participation in international trade fairs (U.S., China, Japan, Germany, Spain), including logistics and commercial promotion"
+        ]
+      },
+      {
+        role: "Entrepreneurship Counselor (Contractor)",
+        company: "SENA – Colombia",
+        dates: "Oct 2023 – Dec 2025",
+        bullets: [
+          "Designed and delivered strategic business and capacity-building programs for 1,500+ SMEs annually",
+          "Advised SMEs on scalability, sustainability and market positioning"
+        ]
+      },
+      {
+        role: "Procurement Negotiator & Analyst (LATAM)",
+        company: "Schneider Electric Colombia",
+        dates: "Sep 2014 – Mar 2023",
+        bullets: [
+          "Managed €6M in annual regional spend across five countries",
+          "Led RFx/RFP processes and supplier negotiations, achieving at least €650K in cumulative cost optimization",
+          "Led the SAP Ariba rollout, improving compliance and efficiency across the region",
+          "Implemented Power BI dashboards to monitor KPIs, track opportunities and support commercial decisions",
+          "Managed supplier performance, SLAs and global vendor contracts"
+        ]
+      },
+      {
+        role: "Project Manager Jr.",
+        company: "XIMIRA SAS",
+        dates: "Aug 2010 – Apr 2013",
+        bullets: [
+          "Managed strategic alliances between private and government entities"
+        ]
+      }
+    ],
+    education: [
+      "Specialization in Marketing Management (2026) – Corporación Universitaria Reformada, Bogotá",
+      "Bachelor's Degree in International Relations & Business – Politécnico Gran Colombiano (2016)",
+      "Diploma in Project Management – Universidad de La Sabana",
+      "Diploma in Geopolitics & International Relations – Universidad del Rosario",
+      "ISO Internal Auditor – ISO 9001, ISO 14001, ISO 45001"
+    ],
+    languages: ["Spanish: native", "English: professional proficiency"]
+  },
+
+  es: {
+    name: "JULIETTE GONZÁLEZ",
+    title: "Especialista en Sourcing Estratégico",
+    contact: "+57 319 245 2444 | Juliette1716@gmail.com | Chía, Colombia | linkedin.com/in/juliette-gt",
+    sections: {
+      summary: "Resumen Profesional",
+      competencies: "Competencias Clave",
+      skills: "Habilidades Técnicas",
+      experience: "Experiencia Profesional",
+      education: "Educación y Certificaciones",
+      languages: "Idiomas"
+    },
+    summaryText: "Especialista en Sourcing Estratégico con más de 8 años de experiencia en procurement en LATAM en Schneider Electric Colombia, abarcando la gestión de gasto regional, el desempeño de proveedores, el cumplimiento y la optimización de costos mediante SAP Ariba, Coupa y Power BI. Trabajo de forma interfuncional con Ventas, Finanzas y Marketing para optimizar el Costo Total de Propiedad (TCO), la calidad y los niveles de servicio. Trayectoria en promoción del comercio internacional y asesoría a pymes con el Ministerio de Relaciones Exteriores y el SENA.",
+    competencies: [
+      ["Sourcing Estratégico y Negociación:", "gestión de RFx/RFP, segmentación de proveedores, diseño de SLA, ejecución de contratos, Costo Total de Propiedad (TCO)"],
+      ["Gestión de Relaciones con Proveedores:", "monitoreo de desempeño, evaluación de riesgos de proveedores, seguimiento de cumplimiento"],
+      ["Datos y Analítica:", "dashboards de KPI, shopper insights"],
+      ["Relacionamiento con Stakeholders:", "colaboración interfuncional, alianzas público-privadas, dinámicas de FMCG y retail"]
+    ],
+    skills: ["SAP Ariba", "Coupa", "SAP (Iberian, MDG, B1)", "SSP-SRM", "Prism", "Power BI", "Excel avanzado", "Microsoft Office"],
+    jobs: [
+      {
+        role: "Asesora de Diplomacia Comercial (Contratista)",
+        company: "Ministerio de Relaciones Exteriores – Colombia",
+        dates: "Jul 2025 – Dic 2025",
+        bullets: [
+          "Implementó la Estrategia de Diplomacia del Café y el Cacao, posicionando cafés especiales a nivel global",
+          "Coordinó alianzas público-privadas con pymes, entidades gubernamentales e instituciones del acuerdo de paz",
+          "Dirigió la participación de Colombia en ferias comerciales internacionales (EE. UU., China, Japón, Alemania, España), incluyendo logística y promoción comercial"
+        ]
+      },
+      {
+        role: "Asesora en Emprendimiento (Contratista)",
+        company: "SENA – Colombia",
+        dates: "Oct 2023 – Dic 2025",
+        bullets: [
+          "Diseñó y ejecutó programas estratégicos de negocio y fortalecimiento de capacidades para 1.500+ pymes al año",
+          "Asesoró a pymes en escalabilidad, sostenibilidad y posicionamiento de mercado"
+        ]
+      },
+      {
+        role: "Negociadora y Analista de Procurement (LATAM)",
+        company: "Schneider Electric Colombia",
+        dates: "Sep 2014 – Mar 2023",
+        bullets: [
+          "Gestionó €6M anuales de gasto regional en cinco países",
+          "Lideró procesos RFx/RFP y negociaciones con proveedores, logrando al menos €650K en optimización acumulada de costos",
+          "Lideró el despliegue de SAP Ariba, mejorando el cumplimiento y la eficiencia en la región",
+          "Implementó dashboards en Power BI para monitorear KPIs, hacer seguimiento de oportunidades y apoyar decisiones comerciales",
+          "Gestionó el desempeño de proveedores, SLA y contratos globales"
+        ]
+      },
+      {
+        role: "Project Manager Jr.",
+        company: "XIMIRA SAS",
+        dates: "Ago 2010 – Abr 2013",
+        bullets: [
+          "Gestionó alianzas estratégicas entre entidades privadas y gubernamentales"
+        ]
+      }
+    ],
+    education: [
+      "Especialización en Gestión de Marketing (2026) – Corporación Universitaria Reformada, Bogotá",
+      "Pregrado en Relaciones Internacionales y Negocios – Politécnico Gran Colombiano (2016)",
+      "Diplomado en Gestión de Proyectos – Universidad de La Sabana",
+      "Diplomado en Geopolítica y Relaciones Internacionales – Universidad del Rosario",
+      "Auditora Interna ISO – ISO 9001, ISO 14001, ISO 45001"
+    ],
+    languages: ["Español: nativo", "Inglés: nivel profesional"]
+  }
+};
+
+/* ============================================================
+   UI i18n + Suggestions (from verified review notes)
+   ============================================================ */
+const UI = {
+  es: {
+    export: "Exportar PDF",
+    copy: "Copiar texto plano",
+    reset: "Reiniciar",
+    editHint: "✏️ <strong>Modo edición activo:</strong> haz clic en cualquier texto del CV para modificarlo. Los cambios se guardan automáticamente en este navegador.",
+    suggTitle: "Sugerencias (solo con datos reales)",
+    suggSub: "Si Juliette no tiene el dato, la viñeta se queda sin cifra. Nunca inventar.",
+    badge: "Pendiente de confirmar",
+    exportTitle: "Cómo exportar un PDF limpio para ATS",
+    exportSteps: [
+      "Pulsa <strong>Exportar PDF</strong> y elige <strong>Guardar como PDF</strong> como destino.",
+      "Márgenes: <strong>Predeterminado</strong>. Desactiva <strong>Gráficos de fondo</strong>.",
+      "Al guardar, abre el PDF y haz la <strong>prueba de copiar y pegar</strong>: selecciona todo el texto, cópialo y pégalo en un bloc de notas. Si el orden se mantiene, el ATS lo leerá bien.",
+      "Nombre del archivo: <strong>Juliette_Gonzalez_Strategic_Sourcing_Specialist.pdf</strong>"
+    ],
+    toastCopied: "Texto plano copiado — pégalo en un ATS o bloc de notas para la prueba",
+    toastSaved: "Cambios guardados automáticamente",
+    toastReset: "CV restaurado a la versión verificada",
+    confirmReset: "¿Seguro que quieres descartar todas las ediciones guardadas y volver a la versión verificada?",
+    suggestions: [
+      "Schneider: cantidad de proveedores y categorías de gasto que gestionaba.",
+      "Schneider: valor de los contratos negociados y % del gasto que cubrían.",
+      "Schneider: alcance real del despliegue de Ariba (países, usuarios o proveedores).",
+      "Schneider: cuántos dashboards de Power BI hizo y quién los usaba.",
+      "SENA: confirmar si los 1.500+ eran pymes o usuarios.",
+      "Ministerio: número de ferias, empresas apoyadas o alianzas coordinadas.",
+      "Agregar los años de los dos diplomados.",
+      "Explicar los vacíos: mar 2023 – oct 2023 y dic 2025 – hoy.",
+      "ISO: agregar ISO 50001 u otras solo si tiene el certificado en papel.",
+      "Cruzar el CV con 2 o 3 ofertas reales de trabajo (palabras clave).",
+      "Alinear LinkedIn: mismo título (\u201CEspecialista en Sourcing Estratégico\u201D) y mismas fechas que el CV."
+    ]
+  },
+  en: {
+    export: "Export PDF",
+    copy: "Copy plain text",
+    reset: "Reset",
+    editHint: "✏️ <strong>Edit mode is on:</strong> click any text in the CV to modify it. Changes are saved automatically in this browser.",
+    suggTitle: "Suggestions (real data only)",
+    suggSub: "If Juliette doesn't have the number, the bullet stays without a figure. Never invent.",
+    badge: "Pending confirmation",
+    exportTitle: "How to export an ATS-clean PDF",
+    exportSteps: [
+      "Click <strong>Export PDF</strong> and choose <strong>Save as PDF</strong> as the destination.",
+      "Margins: <strong>Default</strong>. Turn off <strong>Background graphics</strong>.",
+      "After saving, run the <strong>copy & paste test</strong>: select all text in the PDF, copy and paste into a notepad. If the order holds, the ATS will parse it correctly.",
+      "File name: <strong>Juliette_Gonzalez_Strategic_Sourcing_Specialist.pdf</strong>"
+    ],
+    toastCopied: "Plain text copied — paste it into an ATS or notepad for the test",
+    toastSaved: "Changes saved automatically",
+    toastReset: "CV restored to the verified version",
+    confirmReset: "Discard all saved edits and restore the verified version?",
+    suggestions: [
+      "Schneider: number of suppliers and spend categories she managed.",
+      "Schneider: value of contracts negotiated and % of spend covered.",
+      "Schneider: actual scope of the Ariba rollout (countries, users or suppliers).",
+      "Schneider: how many Power BI dashboards she built and who used them.",
+      "SENA: confirm whether the 1,500+ were SMEs or users.",
+      "Ministry: number of trade fairs, companies supported or partnerships coordinated.",
+      "Add the years of both diplomas.",
+      "Explain the gaps: Mar 2023 – Oct 2023 and Dec 2025 – present.",
+      "ISO: add ISO 50001 or others only if she has the paper certificate.",
+      "Cross-check the CV against 2 or 3 real job postings (keywords).",
+      "Align LinkedIn: same title (\u201CStrategic Sourcing Specialist\u201D) and same dates as the CV."
+    ]
+  }
+};
+
+/* ============================================================
+   State + Rendering
+   ============================================================ */
+let currentLang = "es";
+const cvPage = document.getElementById("cvPage");
+const toastEl = document.getElementById("toast");
+const DATA_VERSION = "2026-10-27-cumulative";
+let saveTimer = null;
+
+function esc(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function buildCV(d) {
+  let html = "";
+  html += `<div class="cv-header">
+    <div class="cv-name">${esc(d.name)}</div>
+    <div class="cv-title">${esc(d.title)}</div>
+    <div class="cv-contact">${esc(d.contact)}</div>
+  </div>`;
+
+  html += `<div class="cv-section"><h2>${esc(d.sections.summary)}</h2><p class="cv-summary">${esc(d.summaryText)}</p></div>`;
+
+  html += `<div class="cv-section"><h2>${esc(d.sections.competencies)}</h2><ul class="cv-list cv-comp">`;
+  d.competencies.forEach(c => { html += `<li><strong>${esc(c[0])}</strong> ${esc(c[1])}</li>`; });
+  html += `</ul></div>`;
+
+  html += `<div class="cv-section"><h2>${esc(d.sections.skills)}</h2><p class="cv-skills">${esc(d.skills.join(", "))}</p></div>`;
+
+  html += `<div class="cv-section"><h2>${esc(d.sections.experience)}</h2>`;
+  d.jobs.forEach(j => {
+    html += `<div class="cv-job">
+      <div class="cv-job-head">
+        <span class="cv-job-role">${esc(j.role)} | ${esc(j.company)}</span>
+        <span class="cv-job-meta">${esc(j.dates)}</span>
+      </div><ul>`;
+    j.bullets.forEach(b => { html += `<li>${esc(b)}</li>`; });
+    html += `</ul></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="cv-section cv-keep"><h2>${esc(d.sections.education)}</h2><ul class="cv-list">`;
+  d.education.forEach(e => { html += `<li>${esc(e)}</li>`; });
+  html += `</ul></div>`;
+
+  html += `<div class="cv-section cv-keep"><h2>${esc(d.sections.languages)}</h2><div class="cv-two">`;
+  d.languages.forEach(l => { html += `<span>${esc(l)}</span>`; });
+  html += `</div></div>`;
+
+  return html;
+}
+
+function renderCV() {
+  const saved = localStorage.getItem("cv_html_" + currentLang);
+  if (saved && localStorage.getItem("cv_ver_" + currentLang) === DATA_VERSION) {
+    cvPage.innerHTML = saved;
+    return;
+  }
+  cvPage.innerHTML = buildCV(CV_DATA[currentLang]);
+  saveCV();
+}
+
+function renderUI() {
+  const t = UI[currentLang];
+  document.getElementById("btnExport").textContent = t.export;
+  document.getElementById("btnCopy").textContent = t.copy;
+  document.getElementById("btnReset").textContent = t.reset;
+  document.getElementById("editHint").innerHTML = t.editHint;
+  document.getElementById("suggTitle").textContent = t.suggTitle;
+  document.getElementById("suggSub").textContent = t.suggSub;
+  document.getElementById("badgePending").textContent = t.badge;
+  document.getElementById("exportTitle").textContent = t.exportTitle;
+  document.getElementById("exportSteps").innerHTML = t.exportSteps.map(s => `<li>${s}</li>`).join("");
+  document.getElementById("btnES").classList.toggle("active", currentLang === "es");
+  document.getElementById("btnEN").classList.toggle("active", currentLang === "en");
+  document.documentElement.lang = currentLang;
+  document.title = `${CV_DATA[currentLang].name} — ${CV_DATA[currentLang].title}`;
+
+  const suggList = document.getElementById("suggList");
+  const checkedState = JSON.parse(localStorage.getItem("sugg_state") || "{}");
+  suggList.innerHTML = t.suggestions.map((s, i) => {
+    const key = currentLang + "_" + i;
+    const done = checkedState[key] ? "done" : "";
+    const chk = checkedState[key] ? "checked" : "";
+    return `<div class="sugg-item ${done}">
+      <input type="checkbox" id="sg_${i}" ${chk} onchange="toggleSugg('${key}', this)">
+      <label for="sg_${i}">${s}</label>
+    </div>`;
+  }).join("");
+}
+
+function toggleSugg(key, cb) {
+  const state = JSON.parse(localStorage.getItem("sugg_state") || "{}");
+  state[key] = cb.checked;
+  localStorage.setItem("sugg_state", JSON.stringify(state));
+  cb.closest(".sugg-item").classList.toggle("done", cb.checked);
+}
+
+function setLang(lang) {
+  if (lang === currentLang) return;
+  saveCV();
+  currentLang = lang;
+  renderUI();
+  renderCV();
+}
+
+function saveCV() {
+  localStorage.setItem("cv_html_" + currentLang, cvPage.innerHTML);
+  localStorage.setItem("cv_ver_" + currentLang, DATA_VERSION);
+}
+
+cvPage.addEventListener("input", () => {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveCV();
+    showToast(UI[currentLang].toastSaved);
+  }, 900);
+});
+
+function copyPlainText() {
+  const text = cvPage.innerText.replace(/\n{3,}/g, "\n\n").trim();
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(UI[currentLang].toastCopied);
+  }).catch(() => {
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); ta.remove();
+    showToast(UI[currentLang].toastCopied);
+  });
+}
+
+function exportPDF() {
+  saveCV();
+  window.print();
+}
+
+function resetAll() {
+  if (!confirm(UI[currentLang].confirmReset)) return;
+  localStorage.removeItem("cv_html_es");
+  localStorage.removeItem("cv_html_en");
+  localStorage.removeItem("sugg_state");
+  renderUI();
+  renderCV();
+  showToast(UI[currentLang].toastReset);
+}
+
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(() => toastEl.classList.remove("show"), 2600);
+}
+
+/* Init */
+renderUI();
+renderCV();
+</script>
+</body>
+</html>
