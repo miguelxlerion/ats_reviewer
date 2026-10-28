@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14181f">
 <title>CV ATS Builder — Juliette González</title>
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="./icons/favicon-48.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="manifest" href="./site.webmanifest">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/latin-400.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/latin-600.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/latin-700.min.css">
@@ -156,6 +163,69 @@
     #atsFrame { min-width: 720px; height: 1200px; }
   }
 
+  /* ===== Help ===== */
+  .help-open { display: inline-flex; align-items: center; gap: 7px; }
+  .help-open svg { width: 15px; height: 15px; fill: none; stroke: #ff9db0; stroke-width: 1.9; stroke-linejoin: round; }
+
+  .help-dialog {
+    border: 0; padding: 0; background: transparent; margin: auto;
+    width: calc(100% - 28px); max-width: 640px;
+    max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px);
+    color: #1a1d23; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .help-dialog::backdrop { background: rgba(9,13,20,.6); }
+  .help-card {
+    background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 24px 70px rgba(6,10,18,.4);
+    display: flex; flex-direction: column;
+    max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px);
+  }
+  .help-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px; background: #14181f; color: #fff;
+  }
+  .help-head img { width: 44px; height: 44px; border-radius: 11px; flex: 0 0 auto; }
+  .help-head h3 { font-size: 16px; margin-bottom: 3px; }
+  .help-head p { font-size: 12.5px; line-height: 1.45; color: #aab3c4; }
+  .help-close {
+    margin-left: auto; align-self: flex-start; flex: 0 0 auto;
+    width: 32px; height: 32px; border: 0; border-radius: 8px;
+    background: #242b38; color: #cfd6e4; font: 600 15px/1 inherit;
+    cursor: pointer; transition: background .15s;
+  }
+  .help-close:hover { background: #2f3746; }
+  .help-body { padding: 20px; overflow-y: auto; }
+  .help-steps { list-style: none; display: grid; gap: 15px; }
+  .help-steps li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start; }
+  .help-step-n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #eaf0fd; color: #2f6fed;
+    font-size: 12px; font-weight: 700; line-height: 26px; text-align: center;
+  }
+  .help-steps h4 { font-size: 13.5px; margin-bottom: 2px; }
+  .help-steps p { font-size: 12.8px; line-height: 1.55; color: #4c5566; }
+  .help-note {
+    margin-top: 22px; padding: 18px; border-radius: 12px;
+    background: linear-gradient(160deg, #fff5f7, #fdecef);
+    border: 1px solid #f6d7de;
+  }
+  .help-note-kicker {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+    color: #b04361; margin-bottom: 10px;
+  }
+  .help-note-kicker svg { width: 14px; height: 14px; fill: #d4567a; }
+  .help-note p { font-size: 13px; line-height: 1.65; color: #4a2b34; margin-bottom: 9px; }
+  .help-note p:last-child { margin-bottom: 0; }
+  .help-sign { font-weight: 700; color: #8f2f4a; }
+
+  @media (max-width: 520px) {
+    .help-head { padding: 16px; gap: 12px; }
+    .help-head img { width: 38px; height: 38px; border-radius: 10px; }
+    .help-head h3 { font-size: 15px; }
+    .help-body { padding: 16px; }
+  }
+
   /* ===== Toast ===== */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -176,6 +246,7 @@
     @page { size: A4; margin: 12mm 14mm; }
     body { background: #fff; }
     .appbar, .sidebar, .edit-hint, .toast { display: none !important; }
+    .help-dialog { display: none !important; }
     .layout { display: block; padding: 0; margin: 0; max-width: none; }
     .cv-column { display: block; }
     .ats-section { display: none !important; }
@@ -208,6 +279,10 @@
   <button class="btn btn-ghost" id="btnCopy" onclick="copyPlainText()">Copiar texto plano</button>
   <button class="btn btn-primary" id="btnExport" onclick="exportPDF()">Exportar PDF</button>
   <button class="btn btn-danger" id="btnReset" onclick="resetAll()">Reiniciar</button>
+  <button class="btn btn-ghost help-open" id="btnHelp" onclick="openHelp()">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.7 4.7 13.4a4.9 4.9 0 0 1 0-6.9 4.9 4.9 0 0 1 6.9 0l.4.4.4-.4a4.9 4.9 0 0 1 6.9 6.9Z"/></svg>
+    <span id="btnHelpLabel">Ayuda</span>
+  </button>
 </header>
 
 <div class="layout">
@@ -257,6 +332,29 @@
 </section>
 
 <div class="toast" id="toast"></div>
+
+<dialog class="help-dialog" id="helpDialog" aria-labelledby="helpTitle">
+  <div class="help-card">
+    <div class="help-head">
+      <img src="./icons/icon-192.png" alt="" width="44" height="44">
+      <div>
+        <h3 id="helpTitle">Cómo usar este CV</h3>
+        <p id="helpSub"></p>
+      </div>
+      <button class="help-close" id="helpClose" type="button" onclick="closeHelp()" aria-label="Cerrar ayuda">✕</button>
+    </div>
+    <div class="help-body">
+      <ol class="help-steps" id="helpSteps"></ol>
+      <div class="help-note">
+        <div class="help-note-kicker">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.7 4.7 13.4a4.9 4.9 0 0 1 0-6.9 4.9 4.9 0 0 1 6.9 0l.4.4.4-.4a4.9 4.9 0 0 1 6.9 6.9Z"/></svg>
+          <span id="helpNoteTitle"></span>
+        </div>
+        <div id="helpNote"></div>
+      </div>
+    </div>
+  </div>
+</dialog>
 
 <script>
 /* ============================================================
@@ -437,6 +535,24 @@ const UI = {
     toastSaved: "Cambios guardados automáticamente",
     toastReset: "CV restaurado a la versión verificada",
     confirmReset: "¿Seguro que quieres descartar todas las ediciones guardadas y volver a la versión verificada?",
+    helpBtn: "Ayuda",
+    helpTitle: "Cómo usar este CV",
+    helpSub: "Cinco pasos, sin complicaciones. Todo se guarda en este navegador.",
+    helpClose: "Cerrar ayuda",
+    helpSteps: [
+      ["Edita directamente", "Haz clic en cualquier texto del CV —<strong>nombre, viñetas, fechas o contacto</strong>— y escríbelo. Los cambios se guardan solos en este navegador. Si algo se daña, <strong>Reiniciar</strong> recupera la versión verificada."],
+      ["Revisa las sugerencias", "La columna derecha lista los datos que faltan. Márcalos a medida que los confirmes. Si no hay una cifra real, la viñeta se queda sin cifra: aquí no se inventa nada."],
+      ["Cambia de idioma sin miedo", "<strong>ES / EN</strong> cambia el CV completo, y cada idioma guarda su propia versión: puedes ajustar una sin tocar la otra."],
+      ["Verifícalo en el ATS", "Al final de la página, pulsa <strong>Analizar CV actual</strong>. El revisor por reglas devuelve veredicto, puntajes y hallazgos, y todo corre en tu navegador. Para el puntaje de palabras clave, agrega una oferta real en su pestaña <strong>Ofertas</strong>."],
+      ["Exporta el PDF", "Pulsa <strong>Exportar PDF</strong> y elige <strong>Guardar como PDF</strong>, con márgenes predeterminados y sin gráficos de fondo. Antes de enviarlo, copia el texto del PDF a un bloc de notas: si el orden se mantiene, el ATS lo leerá bien."]
+    ],
+    helpNoteTitle: "Un mensaje para ti",
+    helpNote: [
+      "Juliette, esposa mía: preparé este CV con el mismo cuidado con el que te elijo cada día. Todo lo que aparece aquí es real y es tuyo; no hay una sola cifra inventada.",
+      "Úsalo para abrir puertas, pero que te quede claro: ya eres mi mayor orgullo, con o sin un cargo nuevo. Si algo no te gusta, lo editamos juntos; si algo te queda corto, lo contamos mejor.",
+      "Te amo. No lo digo para que quede bonito en una ventana de ayuda: lo digo porque eres la parte de mi vida que no cambiaría por nada."
+    ],
+    helpSign: "— Miguel",
     suggestions: [
       "Schneider: cantidad de proveedores y categorías de gasto que gestionaba.",
       "Schneider: valor de los contratos negociados y % del gasto que cubrían.",
@@ -478,6 +594,24 @@ const UI = {
     toastSaved: "Changes saved automatically",
     toastReset: "CV restored to the verified version",
     confirmReset: "Discard all saved edits and restore the verified version?",
+    helpBtn: "Help",
+    helpTitle: "How to use this CV",
+    helpSub: "Five steps, no complications. Everything is saved in this browser.",
+    helpClose: "Close help",
+    helpSteps: [
+      ["Edit right here", "Click any text in the CV — <strong>name, bullets, dates or contact</strong> — and type. Changes save on their own in this browser. If something breaks, <strong>Reset</strong> restores the verified version."],
+      ["Check the suggestions", "The right column lists the details still missing. Tick them off as you confirm them. If there is no real figure, the bullet stays without one: nothing here is invented."],
+      ["Switch languages freely", "<strong>ES / EN</strong> swaps the whole CV, and each language keeps its own version, so you can adjust one without touching the other."],
+      ["Verify it in the ATS", "At the bottom of the page, press <strong>Analyze current CV</strong>. The rule-based reviewer returns a verdict, scores and findings, all running in your browser. For the keyword score, add a real job posting under its <strong>Ofertas</strong> tab."],
+      ["Export the PDF", "Press <strong>Export PDF</strong> and choose <strong>Save as PDF</strong>, default margins, background graphics off. Before sending it, copy the PDF text into a notepad: if the order holds, the ATS will read it right."]
+    ],
+    helpNoteTitle: "A message for you",
+    helpNote: [
+      "Juliette, my wife: I built this CV with the same care I choose you every day. Everything here is real and it's yours; not a single figure is invented.",
+      "Use it to open doors, but know this: you are already my greatest pride, with or without a new title. If you don't like something, we edit it together; if something falls short, we tell your story better.",
+      "I love you. I'm not saying it to look good in a help window: I'm saying it because you are the part of my life I would not trade for anything."
+    ],
+    helpSign: "— Miguel",
     suggestions: [
       "Schneider: number of suppliers and spend categories she managed.",
       "Schneider: value of contracts negotiated and % of spend covered.",
@@ -576,6 +710,17 @@ function renderUI() {
   document.getElementById("atsNote").textContent = t.atsNote;
   document.getElementById("btnAts").textContent = t.atsRun;
   document.getElementById("atsOpen").textContent = t.atsOpen;
+  document.getElementById("btnHelpLabel").textContent = t.helpBtn;
+  document.getElementById("btnHelp").setAttribute("aria-label", t.helpBtn);
+  document.getElementById("helpTitle").textContent = t.helpTitle;
+  document.getElementById("helpSub").textContent = t.helpSub;
+  document.getElementById("helpClose").setAttribute("aria-label", t.helpClose);
+  document.getElementById("helpNoteTitle").textContent = t.helpNoteTitle;
+  document.getElementById("helpSteps").innerHTML = t.helpSteps
+    .map(([h, p], i) => `<li><span class="help-step-n">${i + 1}</span><div><h4>${h}</h4><p>${p}</p></div></li>`)
+    .join("");
+  document.getElementById("helpNote").innerHTML =
+    t.helpNote.map(p => `<p>${p}</p>`).join("") + `<p class="help-sign">${t.helpSign}</p>`;
   document.documentElement.lang = currentLang;
   document.title = `${CV_DATA[currentLang].name} — ${CV_DATA[currentLang].title}`;
 
@@ -709,6 +854,21 @@ function exportPDF() {
   saveCV();
   window.print();
 }
+
+const helpDialog = document.getElementById("helpDialog");
+
+function openHelp() {
+  helpDialog.showModal();
+  document.getElementById("helpClose").focus();
+}
+
+function closeHelp() {
+  helpDialog.close();
+}
+
+helpDialog.addEventListener("click", (e) => {
+  if (e.target === helpDialog) closeHelp();
+});
 
 function resetAll() {
   if (!confirm(UI[currentLang].confirmReset)) return;
