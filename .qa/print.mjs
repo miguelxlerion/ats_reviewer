@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const URL_FILE = "file:///G:/Trabajos/JulietteCV/CVJuliette.html";
+const URL_FILE = "file:///G:/Trabajos/JulietteCV/public/index.html";
 const PORT = 9334;
 const OUT = {
   en: "G:/Trabajos/JulietteCV/Juliette_Gonzalez_Strategic_Sourcing_Specialist.pdf",
@@ -21,10 +21,19 @@ const chrome = spawn(CHROME, [
   "--headless=new",
   "--disable-gpu",
   "--hide-scrollbars",
+  "--no-first-run",
+  "--no-default-browser-check",
   `--remote-debugging-port=${PORT}`,
   `--user-data-dir=${process.cwd()}/.qa/chrome-profile-print`,
   "about:blank",
 ], { stdio: "ignore" });
+
+let ws;
+const shutdown = () => {
+  try { ws?.close(); } catch {}
+  try { chrome.kill(); } catch {}
+};
+process.on("exit", shutdown);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -40,7 +49,7 @@ async function getTarget() {
   throw new Error("Chrome DevTools not reachable");
 }
 
-const ws = new WebSocket(await getTarget());
+ws = new WebSocket(await getTarget());
 await new Promise((r) => ws.addEventListener("open", r));
 let id = 0;
 const pending = new Map();
@@ -73,12 +82,16 @@ await send("Emulation.setDeviceMetricsOverride", {
 });
 await send("Page.navigate", { url: URL_FILE });
 
-for (let i = 0; i < 60; i++) {
-  const ok = await evaluate(
+let ready = false;
+for (let i = 0; i < 80 && !ready; i++) {
+  ready = await evaluate(
     `location.href.startsWith("file:") && typeof buildCV === "function" && !!document.querySelector(".cv-page")`
   ).catch(() => false);
-  if (ok) break;
-  await sleep(150);
+  if (!ready) await sleep(150);
+}
+if (!ready) {
+  const state = await evaluate(`({ href: location.href, state: document.readyState })`).catch(() => null);
+  throw new Error(`La página no cargó: ${JSON.stringify(state)}`);
 }
 await sleep(400);
 

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-const html = readFileSync("CVJuliette.html", "utf8");
+const html = readFileSync("public/index.html", "utf8");
 const start = html.indexOf("const CV_DATA");
 const end = html.indexOf("const UI =", start);
 const CV_DATA = new Function(html.slice(start, end) + "; return CV_DATA;")();

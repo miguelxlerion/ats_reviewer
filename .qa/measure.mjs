@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const URL_FILE = "file:///G:/Trabajos/JulietteCV/CVJuliette.html";
+const URL_FILE = "file:///G:/Trabajos/JulietteCV/public/index.html";
 const WIDTH = Number(process.argv[2] || 390);
 const SHOT = process.argv[3];
 const PORT = 9333;
