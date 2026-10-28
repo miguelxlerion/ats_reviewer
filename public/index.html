@@ -139,6 +139,23 @@
     font-size: 11px; font-weight: 600; border-radius: 20px; padding: 2px 10px; margin-bottom: 10px;
   }
 
+  /* ===== ATS review section ===== */
+  .ats-section { max-width: 1280px; margin: 0 auto 70px; padding: 0 20px; scroll-margin-top: 76px; }
+  .ats-card { padding: 22px; }
+  .ats-head { display: flex; gap: 18px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
+  .ats-head h3 { font-size: 16px; margin-bottom: 5px; }
+  .ats-head .sub { margin-bottom: 0; max-width: 74ch; }
+  .ats-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .ats-actions .btn { display: inline-flex; align-items: center; text-decoration: none; }
+  .ats-frame-wrap { background: #f6f7fa; border: 1px solid #e3e7ef; border-radius: 10px; overflow: hidden; }
+  .ats-empty { padding: 34px 20px; text-align: center; color: #5c6575; font-size: 13px; line-height: 1.6; }
+  .ats-note { margin: 10px 4px 0; font-size: 12px; color: #5c6575; line-height: 1.5; }
+  #atsFrame { display: block; width: 100%; height: 1150px; border: 0; background: #fff; }
+  @media (max-width: 720px) {
+    .ats-frame-wrap { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+    #atsFrame { min-width: 720px; height: 1200px; }
+  }
+
   /* ===== Toast ===== */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -161,6 +178,7 @@
     .appbar, .sidebar, .edit-hint, .toast { display: none !important; }
     .layout { display: block; padding: 0; margin: 0; max-width: none; }
     .cv-column { display: block; }
+    .ats-section { display: none !important; }
     .cv-page {
       width: 100%; min-height: 0; padding: 0; margin: 0;
       box-shadow: none; border-radius: 0; font-size: 10.5pt;
@@ -216,6 +234,27 @@
     </div>
   </aside>
 </div>
+
+<section class="ats-section" id="atsSection" aria-labelledby="atsTitle">
+  <div class="card ats-card">
+    <div class="ats-head">
+      <div>
+        <span class="badge" id="atsBadge">Paso 3 · Verificación</span>
+        <h3 id="atsTitle">Revisar el CV en el sistema ATS</h3>
+        <p class="sub" id="atsSub"></p>
+      </div>
+      <div class="ats-actions">
+        <a class="btn btn-ghost" id="atsOpen" href="./ats/index.html" target="_blank" rel="noopener" onclick="seedAts()">Abrir en pestaña completa</a>
+        <button class="btn btn-primary" id="btnAts" onclick="runAts()">Analizar CV actual</button>
+      </div>
+    </div>
+    <div class="ats-frame-wrap">
+      <p class="ats-empty" id="atsEmpty"></p>
+      <iframe id="atsFrame" title="Revisor ATS" hidden></iframe>
+    </div>
+    <p class="ats-note" id="atsNote"></p>
+  </div>
+</section>
 
 <div class="toast" id="toast"></div>
 
@@ -386,6 +425,14 @@ const UI = {
       "Al guardar, abre el PDF y haz la <strong>prueba de copiar y pegar</strong>: selecciona todo el texto, cópialo y pégalo en un bloc de notas. Si el orden se mantiene, el ATS lo leerá bien.",
       "Nombre del archivo: <strong>Juliette_Gonzalez_Strategic_Sourcing_Specialist.pdf</strong>"
     ],
+    atsBadge: "Paso 3 · Verificación",
+    atsTitle: "Revisar el CV en el sistema ATS",
+    atsSub: "Carga el CV tal como está ahora en el revisor por reglas: devuelve veredicto, puntajes y hallazgos. Todo se calcula en este navegador. Para el puntaje de palabras clave, agrega una oferta real en «Ofertas».",
+    atsRun: "Analizar CV actual",
+    atsOpen: "Abrir en pestaña completa",
+    atsEmpty: "El revisor se abre aquí con el CV cargado. Si editas el CV, vuelve a analizarlo.",
+    atsNote: "Si un cargo aparece como «(sin título)», es una regla del propio revisor (títulos de más de 10 palabras o con punto final), no un error del CV. El cargo, las fechas y las viñetas se leen igual.",
+    toastAts: "CV cargado en el revisor ATS",
     toastCopied: "Texto plano copiado — pégalo en un ATS o bloc de notas para la prueba",
     toastSaved: "Cambios guardados automáticamente",
     toastReset: "CV restaurado a la versión verificada",
@@ -419,6 +466,14 @@ const UI = {
       "After saving, run the <strong>copy & paste test</strong>: select all text in the PDF, copy and paste into a notepad. If the order holds, the ATS will parse it correctly.",
       "File name: <strong>Juliette_Gonzalez_Strategic_Sourcing_Specialist.pdf</strong>"
     ],
+    atsBadge: "Step 3 · Verification",
+    atsTitle: "Review the CV in the ATS system",
+    atsSub: "Loads the CV as it is right now into the rule-based reviewer: verdict, scores and findings. Everything runs in this browser. For the keyword score, add a real job offer under «Ofertas».",
+    atsRun: "Analyze current CV",
+    atsOpen: "Open in full tab",
+    atsEmpty: "The reviewer opens here with the CV loaded. If you edit the CV, run the analysis again.",
+    atsNote: "A job shown as «(sin título)» is a reviewer rule (titles over 10 words or ending in a period), not a CV error. The job, dates and bullets are still read.",
+    toastAts: "CV loaded into the ATS reviewer",
     toastCopied: "Plain text copied — paste it into an ATS or notepad for the test",
     toastSaved: "Changes saved automatically",
     toastReset: "CV restored to the verified version",
@@ -514,6 +569,13 @@ function renderUI() {
   document.getElementById("exportSteps").innerHTML = t.exportSteps.map(s => `<li>${s}</li>`).join("");
   document.getElementById("btnES").classList.toggle("active", currentLang === "es");
   document.getElementById("btnEN").classList.toggle("active", currentLang === "en");
+  document.getElementById("atsBadge").textContent = t.atsBadge;
+  document.getElementById("atsTitle").textContent = t.atsTitle;
+  document.getElementById("atsSub").textContent = t.atsSub;
+  document.getElementById("atsEmpty").textContent = t.atsEmpty;
+  document.getElementById("atsNote").textContent = t.atsNote;
+  document.getElementById("btnAts").textContent = t.atsRun;
+  document.getElementById("atsOpen").textContent = t.atsOpen;
   document.documentElement.lang = currentLang;
   document.title = `${CV_DATA[currentLang].name} — ${CV_DATA[currentLang].title}`;
 
@@ -568,6 +630,79 @@ function copyPlainText() {
     ta.select(); document.execCommand("copy"); ta.remove();
     showToast(UI[currentLang].toastCopied);
   });
+}
+
+const ATS_KEY = "ats-personal-v1";
+const ATS_CV_ID = "cv-builder";
+
+// The reviewer relies on "- " markers to split bullets; without them it merges them.
+// It also reads a short line starting with a section word ("Project Manager…") as a
+// heading, so those job headers are sent as "company | role" to keep the job visible.
+const ATS_HEADING = /^(summary|profile|resumen|perfil|objective|objetivo|experience|experiencia|employment|historial laboral|trayectoria|education|educaci[oó]n|formaci[oó]n|academic|estudios|certif|skills|competencias|habilidades|languages|idiomas|achievements|logros|projects?|proyectos)\b/i;
+
+function cvPlainText() {
+  const lines = [];
+  const add = (s) => { if (s && s.trim()) lines.push(s.trim()); };
+  const gap = () => { if (lines.length && lines[lines.length - 1] !== "") lines.push(""); };
+
+  add(cvPage.querySelector(".cv-name")?.innerText);
+  add(cvPage.querySelector(".cv-title")?.innerText);
+  add(cvPage.querySelector(".cv-contact")?.innerText);
+  gap();
+
+  cvPage.querySelectorAll(".cv-section").forEach(sec => {
+    add(sec.querySelector("h2")?.innerText);
+    add(sec.querySelector(".cv-summary")?.innerText);
+    add(sec.querySelector(".cv-skills")?.innerText);
+    sec.querySelectorAll(".cv-job").forEach(job => {
+      const head = (job.querySelector(".cv-job-role")?.innerText || "").trim();
+      const [role, company] = head.split(" | ");
+      add(role && company && ATS_HEADING.test(role) ? `${company} | ${role}` : head);
+      add(job.querySelector(".cv-job-meta")?.innerText);
+      job.querySelectorAll("li").forEach(li => add("- " + li.innerText));
+      gap();
+    });
+    sec.querySelectorAll(".cv-list > li").forEach(li => add("- " + li.innerText));
+    sec.querySelectorAll(".cv-two span").forEach(sp => add(sp.innerText));
+    gap();
+  });
+
+  return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function seedAts() {
+  saveCV();
+  const text = cvPlainText() || cvPage.innerText.trim();
+
+  let state = null;
+  try { state = JSON.parse(localStorage.getItem(ATS_KEY) || "null"); } catch {}
+  if (!state || !Array.isArray(state.cvs) || !Array.isArray(state.jds)) {
+    state = { cvs: [], jds: [], cvId: null, jdId: null, baseId: null, tab: "analisis" };
+  }
+
+  const entry = {
+    id: ATS_CV_ID,
+    name: `CV actual (${currentLang.toUpperCase()})`,
+    text,
+    at: Date.now(),
+  };
+  state.cvs = [entry, ...state.cvs.filter(c => c.id !== ATS_CV_ID)];
+  state.cvId = ATS_CV_ID;
+  state.baseId = null;
+  state.tab = "analisis";
+  if (!state.jds.some(j => j.id === state.jdId)) state.jdId = state.jds[0]?.id ?? null;
+  localStorage.setItem(ATS_KEY, JSON.stringify(state));
+}
+
+function runAts() {
+  seedAts();
+
+  const frame = document.getElementById("atsFrame");
+  frame.hidden = false;
+  document.getElementById("atsEmpty").hidden = true;
+  frame.src = `./ats/index.html?t=${Date.now()}`;
+  document.getElementById("atsSection").scrollIntoView({ behavior: "smooth", block: "start" });
+  showToast(UI[currentLang].toastAts);
 }
 
 function exportPDF() {

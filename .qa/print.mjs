@@ -116,11 +116,13 @@ for (const lang of ["en", "es"]) {
   }
   console.log(lang.toUpperCase(), JSON.stringify(info));
 
-  const metrics = await send("Page.getLayoutMetrics");
-  const fullH = Math.ceil(metrics.result.cssContentSize.height);
+  const rect = await evaluate(`(() => {
+    const r = document.querySelector(".cv-page").getBoundingClientRect();
+    return { x: r.x + scrollX, y: r.y + scrollY, width: r.width, height: r.height };
+  })()`);
   const shot = await send("Page.captureScreenshot", {
     format: "png", captureBeyondViewport: true,
-    clip: { x: 0, y: 0, width: 1200, height: fullH, scale: 1 },
+    clip: { ...rect, scale: 1 },
   });
   writeFileSync(SHOT[lang], Buffer.from(shot.result.data, "base64"));
 
