@@ -1,0 +1,303 @@
+{
+  "version": 2,
+  "rev": 102,
+  "lang": "es",
+  "tpl": "ats",
+  "acc": "#00fbff",
+  "zoom": 1,
+  "mode": "edit",
+  "docs": {
+    "es": {
+      "p": {
+        "nombre": "Miguel E. Rodriguez Martinez",
+        "titulo": "Senior Full-Stack Engineer | Real-Time 3D & AI Data Platforms",
+        "email": "miguelxlerion@gmail.com",
+        "tel": "+57 313 226 3265",
+        "ubi": "Bogotá, Colombia",
+        "lin": "https://www.linkedin.com/in/miguelrodriguez-dataviz/",
+        "port": "mike-portfolio.xlerionultimate.workers.dev",
+        "web": "github.com/miguelxlerion",
+        "res": "Senior Full-Stack Engineer con 10+ años en datos en tiempo real, gemelos digitales (Digital Twins) y visualización 3D. Arquitectura full-stack: React, Node.js, Python/Django, pgvector, IoT; -60/-80% en análisis y 99% uptime con CI/CD. También: Squarespace, GoDaddy, landing pages con HTML/CSS, SEO, Google Analytics, QA testing y gestión de proyectos con PMP®. Radicado en Bogotá, disponible para on-site (abierto a remoto o reubicación)."
+      },
+      "exp": [
+        {
+          "puesto": "Senior Full-Stack Engineer (Único Responsable Técnico)",
+          "emp": "Alcaldía de Caucasia — FOVIS",
+          "ini": "Abr. 2024",
+          "fin": "Oct. 2025",
+          "desc": "Arquitecté y desarrollé en solitario una plataforma gubernamental de gestión inmobiliaria multi-municipio (12+ municipios, 1.200+ viviendas). Stack full-stack: React 18, Tailwind, Node.js/Express, PostgreSQL. Responsable técnico único: arquitectura, desarrollo, DevOps, QA y despliegue.",
+          "ach": "Arquitecté y desarrollé en solitario una arquitectura escalable para la plataforma gubernamental de gestión inmobiliaria (12+ municipios, 1.200+ viviendas) con React 18, Tailwind y Node.js/Express.\nDiseñé e implementé dashboards de KPIs en tiempo real (WebSockets) para visualización de datos complejos, reduciendo el tiempo de toma de decisiones administrativas en un 60%.\nConstruí una biblioteca de componentes React con testing (Jest + React Testing Library) y Storybook, asegurando consistencia de UX y diseño responsivo.\nConfiguré pipelines CI/CD (GitHub Actions) con linting, testing y despliegue automático a Docker/Linux, logrando 99% uptime en producción mediante diseño tolerante a fallos y buffering local."
+        },
+        {
+          "puesto": "Senior Full-Stack Engineer & 3D Interactive Lead",
+          "emp": "Xlerion Studio",
+          "ini": "Feb. 2023",
+          "fin": "Presente",
+          "desc": "Liderazgo técnico en integración de arquitecturas frontend complejas: flujos de datos en tiempo real (WebSockets/MQTT) con gemelos digitales y escenas 3D interactivas (Three.js, React Three Fiber). Optimización de rendimiento visual (FPS estable, LOD, lazy loading). Automatización de pipelines 3D (MaxScript/Python). Testing E2E/unitario en CI/CD.",
+          "ach": "Lideré la integración de arquitecturas frontend complejas conectando flujos de datos en tiempo real (WebSockets/MQTT) con gemelos digitales (Digital Twins) y escenas 3D interactivas (Three.js, React Three Fiber).\nOptimicé el rendimiento visual, logrando FPS estable mediante profiling, lazy loading y técnicas de level-of-detail (LOD).\nDesarrollé un pipeline de automatización en MaxScript/Python que redujo el tiempo de exportación de assets 3D en un 80% y eliminó errores manuales.\nImplementé testing E2E (Cypress) y unitario (Jest/PyTest) en pipelines GitHub Actions/GitLab CI, con cobertura del 85%+."
+        },
+        {
+          "puesto": "Front-End Engineer & Data Visualization Lead",
+          "emp": "AONC",
+          "ini": "Mar. 2018",
+          "fin": "Dic. 2019",
+          "desc": "Desarrollo de interfaces gamificadas y visualizaciones 3D (Three.js/WebGL) para transformación de datos masivos en entornos navegables. Establecimiento de estándares de código, code reviews y testing automatizado.",
+          "ach": "Dirigí el desarrollo de interfaces gamificadas y visualizaciones 3D (Three.js/WebGL) que transformaron datos masivos en entornos navegables, reduciendo el tiempo de análisis un 40%.\nEstablecí estándares de código, code reviews y testing automatizado (Jest, PyTest), mejorando la mantenibilidad del código base."
+        },
+        {
+          "puesto": "Front-End Engineer & UI Designer",
+          "emp": "USAID — ACDI/VOCA",
+          "ini": "Ene. 2015",
+          "fin": "Dic. 2017",
+          "desc": "Arquitectura y desarrollo del software ICOE: traducción de bases de datos nacionales complejas a paneles interactivos para decisiones gubernamentales. Accesibilidad WCAG AA, diseño responsivo, migración de sistema legacy a stack basado en componentes.",
+          "ach": "Arquitecté el software ICOE, traduciendo bases de datos nacionales complejas en paneles interactivos para decisiones gubernamentales.\nAseguré accesibilidad (WCAG AA) y diseño responsivo para stakeholders de alto nivel, y migré el sistema legacy a un stack basado en componentes."
+        }
+      ],
+      "edu": [
+        {
+          "grad": "Bootcamp en Inteligencia Artificial — Nivel Explorador (159 h)",
+          "inst": "MinTIC & Universidad Sergio Arboleda",
+          "anio": "2024"
+        },
+        {
+          "grad": "Diplomado en Introducción a la Gestión Pública Local (80 h)",
+          "inst": "Fundación de Educación Superior San José & Gobernación de Cundinamarca",
+          "anio": "2025"
+        }
+      ],
+      "skills": [
+        "Frontend: React 18, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, React Three Fiber, Three.js, WebGL",
+        "Backend: Node.js/Express, Python (Django/DRF, FastAPI), PostgreSQL, MongoDB, Redis, WebSockets, MQTT",
+        "DevOps & Calidad: Docker, Docker Compose, GitHub Actions, GitLab CI, Linux (Ubuntu Server), Nginx, Jest, React Testing Library, Cypress, PyTest",
+        "3D / IA / Datos: Three.js, WebGL, Digital Twins (gemelos digitales), Blender, MaxScript (automatización), RAG/LangChain, pgvector (Vector Databases), chunking semántico, hybrid search, Unity, Unreal Engine",
+        "3D Art: ZBrush, Substance Painter, Substance Designer, Maya",
+        "Web, SEO y QA: Squarespace, GoDaddy, HTML/CSS, Landing Pages, SEO, Google Analytics, QA testing, PMP® (gestión de proyectos)"
+      ],
+      "langs": [
+        {
+          "lang": "Español",
+          "lvl": "Nativo"
+        },
+        {
+          "lang": "Inglés",
+          "lvl": "B2"
+        }
+      ],
+      "certs": [
+        {
+          "cert": "Master Power BI (4 h)",
+          "emisor": "Intelligent Training · MinTIC",
+          "anio": "2024"
+        },
+        {
+          "cert": "Introducción a Unreal Engine",
+          "emisor": "SAE Institute México / Coursera",
+          "anio": "2024"
+        },
+        {
+          "cert": "Estimación de Proyectos de Software (5 h)",
+          "emisor": "Udemy",
+          "anio": "2020"
+        },
+        {
+          "cert": "Excelencia Estratégica y Adaptación Organizacional (20 h)",
+          "emisor": "SENA & Cámara Oficial de Comercio de España",
+          "anio": "2026"
+        },
+        {
+          "cert": "Fundamentos e Integración con ChatGPT (2 h)",
+          "emisor": "HPE Education Services",
+          "anio": "2026"
+        },
+        {
+          "cert": "Diseño de Videojuegos en Tercera Persona con Unity (40 h)",
+          "emisor": "SENA",
+          "anio": "2015"
+        }
+      ],
+      "pubs": [],
+      "projs": [
+        {
+          "proj": "Enterprise RAG Assistant",
+          "desc": "Backend modular (Python/Django/DRF) que conecta bases de conocimiento corporativas con LLMs mediante RAG: procesamiento asíncrono de PDFs, chunking semántico, búsqueda híbrida (vectorial + léxica) y re-ranking para evitar alucinaciones. Stack: LangChain, PostgreSQL + pgvector, Celery/Redis, Docker; testing con PyTest y CI/CD en GitHub Actions."
+        },
+        {
+          "proj": "IoT Telemetry Backend Resiliente",
+          "desc": "Plataforma de ingestión y procesamiento en tiempo real de flujos masivos de datos IoT (Python asyncio / Node.js, WebSockets y MQTT). Logré 99% uptime mediante diseño tolerante a fallos, buffering local y pruebas de carga con Locust. Stack: PostgreSQL/MySQL, Docker, Linux y Bash."
+        },
+        {
+          "proj": "Interactive 3D Analytics Dashboard",
+          "desc": "Aplicación full-stack (React, Three.js, Django/Node.js) que transforma datos tabulares masivos en dashboards 3D y entornos gamificados en tiempo real, con FPS estable mediante LOD y lazy loading. Testing con Jest/Cypress y CI/CD automatizado."
+        }
+      ],
+      "specs": [
+        {
+          "n": "Shaders & Visualización 3D en tiempo real",
+          "d": "Three.js, React Three Fiber, WebGL, shaders personalizados"
+        },
+        {
+          "n": "Gemelos digitales & Flujos en tiempo real",
+          "d": "WebSockets, MQTT, ingestión IoT, dashboards de KPIs"
+        },
+        {
+          "n": "Optimización de rendimiento visual",
+          "d": "LOD, lazy loading, profiling de FPS, optimización de assets 3D"
+        },
+        {
+          "n": "Pipelines 3D & Automatización",
+          "d": "MaxScript, Python, Blender, exportación y validación de assets"
+        },
+        {
+          "n": "Integración Art ↔ Ingeniería",
+          "d": "Componentes React, design systems, Storybook, documentación técnica"
+        }
+      ]
+    },
+    "en": {
+      "p": {
+        "nombre": "Miguel E. Rodriguez Martinez",
+        "titulo": "Senior Full-Stack Engineer | Real-Time 3D & AI Data Platforms",
+        "email": "miguelxlerion@gmail.com",
+        "tel": "+57 313 226 3265",
+        "ubi": "Bogotá, Colombia",
+        "lin": "https://www.linkedin.com/in/miguelrodriguez-dataviz/",
+        "port": "mike-portfolio.xlerionultimate.workers.dev",
+        "web": "github.com/miguelxlerion",
+        "res": "Senior Full-Stack Engineer with 10+ years in real-time data platforms, digital twins and interactive 3D visualization. Full-stack architecture: React, Node.js, Python/Django, pgvector, IoT; 60–80% faster analysis and 99% uptime with CI/CD. Also: Squarespace, GoDaddy, HTML/CSS landing pages, SEO, Google Analytics, QA testing and PMP®-aligned project management. Based in Bogotá, Colombia, available for on-site work (open to remote or relocation)."
+      },
+      "exp": [
+        {
+          "puesto": "Senior Full-Stack Engineer (Sole Technical Owner)",
+          "emp": "Caucasia Mayor's Office — FOVIS",
+          "ini": "Apr. 2024",
+          "fin": "Oct. 2025",
+          "desc": "Single-handedly architected and built a multi-municipality government property management platform (12+ municipalities, 1,200+ housing units). Full-stack: React 18, Tailwind, Node.js/Express, PostgreSQL. Sole technical owner: architecture, development, DevOps, QA, and deployment.",
+          "ach": "Architected and built solo a scalable platform for the government property management system (12+ municipalities, 1,200+ housing units) with React 18, Tailwind and Node.js/Express.\nDesigned and implemented real-time KPI dashboards (WebSockets) for complex data visualization, cutting administrative decision-making time by 60%.\nBuilt a React component library with testing (Jest + React Testing Library) and Storybook, ensuring UX consistency and responsive design.\nSet up CI/CD pipelines (GitHub Actions) with linting, testing and automated deployment to Docker/Linux, achieving 99% uptime in production through fault-tolerant design and local buffering."
+        },
+        {
+          "puesto": "Senior Full-Stack Engineer & 3D Interactive Lead",
+          "emp": "Xlerion Studio",
+          "ini": "Feb. 2023",
+          "fin": "Present",
+          "desc": "Technical leadership in complex frontend architecture integration: real-time data streams (WebSockets/MQTT) with digital twins and interactive 3D scenes (Three.js, React Three Fiber). Visual performance optimization (stable FPS, LOD, lazy loading). 3D pipeline automation (MaxScript/Python). E2E/unit testing in CI/CD.",
+          "ach": "Led the integration of complex frontend architectures connecting real-time data streams (WebSockets/MQTT) with digital twins and interactive 3D scenes (Three.js, React Three Fiber).\nOptimized visual performance, achieving stable FPS through profiling, lazy loading and level-of-detail (LOD) techniques.\nBuilt a MaxScript/Python automation pipeline that reduced 3D asset export time by 80% and eliminated manual errors.\nImplemented E2E (Cypress) and unit (Jest/PyTest) testing in GitHub Actions/GitLab CI pipelines, with 85%+ coverage."
+        },
+        {
+          "puesto": "Front-End Engineer & Data Visualization Lead",
+          "emp": "AONC",
+          "ini": "Mar. 2018",
+          "fin": "Dec. 2019",
+          "desc": "Development of gamified interfaces and 3D visualizations (Three.js/WebGL) transforming massive datasets into navigable environments. Established code standards, code reviews, and automated testing.",
+          "ach": "Led the development of gamified interfaces and 3D visualizations (Three.js/WebGL) that turned massive datasets into navigable environments, reducing analysis time by 40%.\nEstablished code standards, code reviews and automated testing (Jest, PyTest), improving codebase maintainability."
+        },
+        {
+          "puesto": "Front-End Engineer & UI Designer",
+          "emp": "USAID — ACDI/VOCA",
+          "ini": "Jan. 2015",
+          "fin": "Dec. 2017",
+          "desc": "Architected and developed ICOE software: translating complex national databases into interactive dashboards for government decision-making. WCAG AA accessibility, responsive design, legacy system migration to component-based stack.",
+          "ach": "Architected the ICOE software, translating complex national databases into interactive dashboards for government decision-making.\nEnsured accessibility (WCAG AA) and responsive design for senior stakeholders, and migrated the legacy system to a component-based stack."
+        }
+      ],
+      "edu": [
+        {
+          "grad": "AI Bootcamp — Explorer Level (159 h)",
+          "inst": "MinTIC & Universidad Sergio Arboleda",
+          "anio": "2024"
+        },
+        {
+          "grad": "Diploma in Introduction to Local Public Management (80 h)",
+          "inst": "Fundación de Educación Superior San José & Gobernación de Cundinamarca",
+          "anio": "2025"
+        }
+      ],
+      "skills": [
+        "Frontend: React 18, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, React Three Fiber, Three.js, WebGL",
+        "Backend: Node.js/Express, Python (Django/DRF, FastAPI), PostgreSQL, MongoDB, Redis, WebSockets, MQTT",
+        "DevOps & Quality: Docker, Docker Compose, GitHub Actions, GitLab CI, Linux (Ubuntu Server), Nginx, Jest, React Testing Library, Cypress, PyTest",
+        "3D / AI / Data: Three.js, WebGL, Digital Twins, Blender, MaxScript (automation), RAG/LangChain, pgvector (Vector Databases), semantic chunking, hybrid search, Unity, Unreal Engine",
+        "3D Art: ZBrush, Substance Painter, Substance Designer, Maya",
+        "Web, SEO & QA: Squarespace, GoDaddy, HTML/CSS, Landing Pages, SEO, Google Analytics, QA testing, PMP® (project management)"
+      ],
+      "langs": [
+        {
+          "lang": "Spanish",
+          "lvl": "Native"
+        },
+        {
+          "lang": "English",
+          "lvl": "B2"
+        }
+      ],
+      "certs": [
+        {
+          "cert": "Master Power BI (4 h)",
+          "emisor": "Intelligent Training · MinTIC",
+          "anio": "2024"
+        },
+        {
+          "cert": "Introduction to Unreal Engine",
+          "emisor": "SAE Institute México / Coursera",
+          "anio": "2024"
+        },
+        {
+          "cert": "Software Project Estimation (5 h)",
+          "emisor": "Udemy",
+          "anio": "2020"
+        },
+        {
+          "cert": "Strategic Excellence and Organizational Adaptation (20 h)",
+          "emisor": "SENA & Cámara Oficial de Comercio de España",
+          "anio": "2026"
+        },
+        {
+          "cert": "ChatGPT Fundamentals and Integration (2 h)",
+          "emisor": "HPE Education Services",
+          "anio": "2026"
+        },
+        {
+          "cert": "Third-Person Video Game Design with Unity (40 h)",
+          "emisor": "SENA",
+          "anio": "2015"
+        }
+      ],
+      "pubs": [],
+      "projs": [
+        {
+          "proj": "Enterprise RAG Assistant",
+          "desc": "Modular backend (Python/Django/DRF) connecting corporate knowledge bases to LLMs through RAG: asynchronous PDF processing, semantic chunking, hybrid search (vector + lexical) and re-ranking to prevent hallucinations. Stack: LangChain, PostgreSQL + pgvector, Celery/Redis, Docker; tested with PyTest and CI/CD on GitHub Actions."
+        },
+        {
+          "proj": "IoT Resilient Telemetry Backend",
+          "desc": "Real-time ingestion and processing platform for high-volume IoT data streams (Python asyncio / Node.js, WebSockets and MQTT). Achieved 99% uptime through fault-tolerant design, local buffering and load testing with Locust. Stack: PostgreSQL/MySQL, Docker, Linux and Bash."
+        },
+        {
+          "proj": "Interactive 3D Analytics Dashboard",
+          "desc": "Full-stack application (React, Three.js, Django/Node.js) that turns massive tabular data into real-time 3D dashboards and gamified environments, with stable FPS through LOD and lazy loading. Tested with Jest/Cypress and automated CI/CD."
+        }
+      ],
+      "specs": [
+        {
+          "n": "Shaders & Real-Time 3D Visualization",
+          "d": "Three.js, React Three Fiber, WebGL, custom shaders"
+        },
+        {
+          "n": "Digital Twins & Real-Time Data Streams",
+          "d": "WebSockets, MQTT, IoT ingestion, KPI dashboards"
+        },
+        {
+          "n": "Visual Performance Optimization",
+          "d": "LOD, lazy loading, FPS profiling, 3D asset optimization"
+        },
+        {
+          "n": "3D Pipelines & Automation",
+          "d": "MaxScript, Python, Blender, asset export and validation"
+        },
+        {
+          "n": "Art ↔ Engineering Bridge",
+          "d": "React components, design systems, Storybook, technical documentation"
+        }
+      ]
+    }
+  }
+}

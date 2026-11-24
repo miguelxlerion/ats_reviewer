@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0e16">
+<title>CV Studio - Generador de CVs Profesionales</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#fff;--bg2:#f8fafc;--bg3:#f1f5f9;--sf:#fff;--sfh:#f1f5f9;--bd:#e2e8f0;--bds:#cbd5e1;--tx:#1e293b;--tx2:#475569;--tx3:#94a3b8;--txi:#fff;
+--pr:#4f46e5;--prh:#4338ca;--prl:#eef2ff;--prt:#312e81;--ok:#059669;--okl:#ecfdf5;--wn:#d97706;--er:#dc2626;--erl:#fef2f2;
+--acc:#6366f1;--fs:'Inter',system-ui,sans-serif;--fh:'Space Grotesk',var(--fs);--fm:'IBM Plex Mono',monospace;
+--r1:6px;--r2:10px;--r3:14px;--rf:99px;--sh1:0 1px 2px rgba(0,0,0,.05);--sh2:0 4px 12px rgba(0,0,0,.08);--sh3:0 12px 32px rgba(0,0,0,.12);
+--hh:60px;--sw:420px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fs);font-size:.9rem;line-height:1.55;color:var(--tx);background:var(--bg);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+::selection{background:var(--prl);color:var(--prt)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--bds);border-radius:var(--rf)}
+:focus-visible{outline:2px solid var(--pr);outline-offset:1px}
+.topbar{height:var(--hh);display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo img{display:block}.logo-t b{display:block;font-family:var(--fh);font-size:.95rem;line-height:1.2}.logo-t small{font-size:.65rem;color:var(--tx3)}
+.tabs{display:flex;gap:2px;background:var(--bg2);padding:3px;border-radius:var(--r2);margin-left:auto}
+.tab{padding:6px 14px;border:0;background:0;border-radius:var(--r1);font:600 .8rem var(--fs);color:var(--tx2);cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--sf);color:var(--pr);box-shadow:var(--sh1)}
+.spacer{flex:1}
+.acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border:1px solid var(--bd);border-radius:var(--r1);background:var(--sf);font:500 .78rem var(--fs);color:var(--tx);cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--bg2);border-color:var(--bds)}
+.btn.pri{background:var(--pr);border-color:var(--pr);color:#fff}.btn.pri:hover{background:var(--prh)}
+.btn.gh{border-color:transparent;background:0;color:var(--tx3)}.btn.gh:hover{background:var(--bg2);color:var(--tx)}
+.btn.sm{padding:4px 8px;font-size:.72rem}
+.btn.dgr{border-color:var(--er);color:var(--er)}.btn.dgr:hover{background:var(--erl)}
+.layout{flex:1;display:flex;overflow:hidden}
+.editor{width:var(--sw);min-width:300px;max-width:600px;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+#edBody{flex:1;overflow-y:auto;padding:16px}
+.resizer{width:5px;background:var(--bd);cursor:col-resize;flex-shrink:0}.resizer:hover,.resizer.drag{background:var(--pr)}
+.pv{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg2)}
+.pvb{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--sf);border-bottom:1px solid var(--bd);flex-wrap:wrap;flex-shrink:0}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border:1px solid var(--bd);border-radius:var(--rf);background:var(--sf);font:500 .75rem var(--fs);color:var(--tx2);cursor:pointer}
+.pill:hover{border-color:var(--pr);color:var(--pr)}.pill.on{background:var(--pr);border-color:var(--pr);color:#fff}
+.acc-pick{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--tx2)}.acc-pick input{width:28px;height:28px;border:0;border-radius:4px;cursor:pointer;padding:0}
+.zoom{display:flex;align-items:center;gap:4px;margin-left:auto}
+.zv{min-width:44px;text-align:center;font:600 .78rem var(--fm)}
+.ib{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:1px solid var(--bd);border-radius:var(--r1);background:var(--sf);font-size:1rem;cursor:pointer;color:var(--tx)}.ib:hover{background:var(--bg2)}
+.stage{flex:1;display:flex;align-items:flex-start;justify-content:flex-start;padding:32px;overflow:auto;min-height:0}
+.sheet{width:210mm;min-height:297mm;background:#fff;box-shadow:var(--sh3);flex-shrink:0;margin:auto;zoom:var(--cvzoom,1)}
+#cvpg{padding:16mm 24mm;font-size:9.8pt;color:#333;line-height:1.5}
+.meter{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:12px;margin-bottom:12px}
+.meter-t{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600;font-size:.82rem}.meter-t b{font-family:var(--fm);color:var(--pr)}
+.bar{height:5px;background:var(--bg3);border-radius:var(--rf);overflow:hidden}.bar i{display:block;height:100%;background:var(--pr);border-radius:var(--rf);transition:width .4s}
+.sec{border:1px solid var(--bd);border-radius:var(--r2);margin-bottom:8px;overflow:hidden}
+.sec>summary{display:flex;align-items:center;gap:8px;padding:10px 12px;font:600 .82rem var(--fs);cursor:pointer;list-style:none;background:var(--sf);user-select:none}
+.sec>summary::-webkit-details-marker{display:none}.sec>summary:hover{background:var(--bg2)}
+.sec-b{padding:12px;border-top:1px solid var(--bd);background:var(--bg2)}
+.sec-tip{font-size:.74rem;color:var(--tx3);margin-bottom:10px;line-height:1.4}
+.fld{margin-bottom:10px}.fld label{display:block;font-size:.76rem;font-weight:500;color:var(--tx2);margin-bottom:3px}
+.fld input,.fld textarea,.fld select{width:100%;padding:7px 9px;border:1px solid var(--bd);border-radius:var(--r1);font:.84rem var(--fs);color:var(--tx);background:var(--sf)}
+.fld textarea{resize:vertical;min-height:60px}.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--pr);box-shadow:0 0 0 2px var(--prl)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r1);padding:10px;margin-bottom:8px}
+.item-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.item-h b{font-size:.8rem}
+.add{width:100%;padding:8px;border:1px dashed var(--bds);border-radius:var(--r1);background:0;font:500 .78rem var(--fs);color:var(--tx2);cursor:pointer}
+.add:hover{border-color:var(--pr);color:var(--pr);background:var(--prl)}
+.skill-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--prl);color:var(--prt);border-radius:var(--rf);font-size:.74rem;margin:2px}
+.skill-tag button{border:0;background:0;color:inherit;cursor:pointer;font-size:.8rem;line-height:1;padding:0}
+.lang-row{display:flex;gap:6px;margin-bottom:6px}.lang-row input{flex:1}
+.toast{position:fixed;bottom:18px;right:18px;z-index:99;min-width:220px;max-width:360px;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh2);font-size:.82rem;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.on{transform:translateY(0);opacity:1}.toast.ok{border-left:4px solid var(--ok)}.toast.er{border-left:4px solid var(--er)}.toast.if{border-left:4px solid var(--pr)}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:120;padding:24px}
+.modal.on{display:flex}
+.modal-b{background:#fff;border-radius:14px;width:min(780px,100%);max-height:86vh;display:flex;flex-direction:column;box-shadow:0 24px 70px rgba(0,0,0,.35);overflow:hidden}
+.modal-h{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #e2e8f0;font-size:.9rem;color:#0f172a}
+.modal-h .ib{margin-left:auto}
+.ats-status{padding:10px 18px;font-size:.78rem;line-height:1.45;border-bottom:1px solid #e2e8f0}
+.ats-status.ok{background:#ecfdf5;color:#047857}.ats-status.warn{background:#fffbeb;color:#b45309}
+.ats-jd{display:flex;gap:8px;padding:10px 18px;border-bottom:1px solid #e2e8f0;background:#fff}
+.ats-jd textarea{flex:1;height:54px;resize:vertical;border:1px solid #cbd5e1;border-radius:8px;padding:7px 9px;font:12px/1.45 var(--fs);color:#0f172a}
+.ats-kw{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px;max-height:120px;overflow:auto}
+.ats-kw:not(:empty){padding:10px 18px;border-bottom:1px solid #e2e8f0}
+.kw{font-size:.72rem;padding:2px 8px;border-radius:999px;white-space:nowrap}.kw.hit{background:#ecfdf5;color:#047857}.kw.miss{background:#fef2f2;color:#b91c1c}
+#atsTxt{margin:0;padding:16px 18px;overflow:auto;font:12px/1.55 ui-monospace,Consolas,'Courier New',monospace;color:#0f172a;white-space:pre-wrap;flex:1}
+.modal-f{display:flex;align-items:center;gap:12px;padding:12px 18px;border-top:1px solid #e2e8f0;background:#f8fafc}
+.ats-hint{font-size:.72rem;color:#64748b}
+
+/* CV base */
+.cv{font-family:'Inter',sans-serif;color:#333;line-height:1.45}
+.cv h1{font-family:'Space Grotesk',sans-serif;font-size:2rem;line-height:1.1;color:var(--cvT,#0f172a)}
+.cv h2{font-family:'Space Grotesk',sans-serif;font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:var(--cvS,#1e3a5f);margin:14px 0 8px;padding-bottom:3px;border-bottom:1.5px solid var(--cvS,#1e3a5f)}
+.cv section{margin-bottom:10px}
+.cv .ent{margin-bottom:8px}
+.cv .ent-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.cv .ent-t{font-weight:600;color:var(--cvST,#0f172a);font-size:.92rem}
+.cv .ent-m{font-size:.75rem;color:#64748b;white-space:nowrap}
+.cv .ent-s{font-size:.82rem;color:#475569;font-weight:500}
+.cv .ent-d{font-size:.8rem;color:#475569;margin-top:2px}
+.cv .ent-d ul{margin:4px 0 0 16px}.cv .ent-d li{margin-bottom:2px}
+.cv .sk{display:flex;flex-wrap:wrap;gap:5px}
+.cv .sk span{padding:3px 9px;background:var(--cvSK,#eef2ff);color:var(--cvSKT,#4f46e5);border-radius:var(--rf);font-size:.72rem;font-weight:500}
+.cv .cv-hd{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--cv-line,var(--cvS,#1e3a5f))}
+.cv .cv-hd h1{margin-bottom:4px}
+.cv .cv-tag{font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--acc);margin-bottom:10px}
+.cv .cv-chips{display:flex;flex-wrap:wrap;gap:6px;font-size:.75rem;color:#64748b}
+.cv .cv-chips span{display:inline-flex;align-items:center;gap:3px}
+.cv .cv-chips svg{color:var(--acc);width:11px;height:11px}
+.cv a{text-decoration:none;color:inherit}
+.cv .cert-row{font-size:.84rem;color:#334155;line-height:1.35;margin-bottom:3px}
+.cv .cert-row .cert-t{font-weight:600;color:var(--cvST,#0f172a);margin-right:6px}
+.cv .cert-row .cert-m{color:var(--cvS,#1e3a5f)}
+
+/* ATS */
+.cv-ats{--acc:#2563eb;--cvT:#0f172a;--cvS:#1e3a5f;--cvST:#0f172a;--cvSK:#eef2ff;--cvSKT:#1e40af}
+.cv-ats .cv-hd{border-bottom:2px solid var(--acc);padding-bottom:12px}
+.cv-ats .cv-ats-contact{font-size:.8rem;color:#334155;line-height:1.6;margin-top:6px}
+.cv-ats .cv-ats-contact.sub{margin-top:1px}
+.cv-ats .cv-ats-contact span{white-space:nowrap;margin-right:2px}
+.cv-ats .cv-ats-contact a{color:#1d4ed8;text-decoration:underline}
+.cv-ats section{margin-bottom:10px}.cv-ats .ent{margin-bottom:6px}
+.cv-ats .ent-t{font-size:.92rem}.cv-ats .ent-s{color:#334155}
+.cv-ats .sk-ats{font-size:.82rem;color:#334155}.cv-ats .sk-ats div{margin-bottom:2px}
+.cv-ats .cert-row{font-size:.82rem;color:#334155;margin-bottom:2px}
+.cv-ats h2{color:#0f172a;border-bottom:1.5px solid #0f172a;border-radius:0}
+
+/* Diseño */
+.cv-dis{--acc:#eab308;--cvT:#0f172a;--cvS:#854d0e;--cvST:#0f172a;--cvSK:#fef9c3;--cvSKT:#854d0e}
+.cv-dis .cv-hd{background:#0f172a;color:#fff;padding:16mm 24mm 14px;margin:-20mm -24mm 12px;border:0}
+.cv-dis .cv-hd h1,.cv-dis .cv-hd .cv-tag,.cv-dis .cv-hd .cv-chips{color:#fff}
+.cv-dis .cv-hd .cv-chips svg{color:#eab308}
+.cv-dis h2{color:#854d0e;border-color:#854d08}.cv-dis section{margin-bottom:10px}.cv-dis .ent{margin-bottom:6px}
+
+/* Web */
+.cv-web{--acc:#0d9488;--cvT:#0f172a;--cvS:#0f766e;--cvST:#0f172a;--cvSK:#ccfbf1;--cvSKT:#134e4a}
+.cv-web .cv-hd{border-left:4px solid #0d9488;padding-left:14px;margin-bottom:16px}
+.cv-web section{margin-bottom:10px}.cv-web .ent{margin-bottom:6px}
+
+/* 3D */
+.cv-tresd{--acc:#7c3aed;--cvT:#1e1b4b;--cvS:#4c1d95;--cvST:#1e1b4b;--cvSK:#ede9fe;--cvSKT:#5b21b6}
+.cv-tresd .cv-hd{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;padding:16mm 24mm 24px;margin:-20mm -24mm 16px;border:0;clip-path:polygon(0 0,100% 0,100% 88%,0 100%)}
+.cv-tresd .cv-hd h1,.cv-tresd .cv-hd .cv-tag,.cv-tresd .cv-hd .cv-chips{color:#fff}
+.cv-tresd .cv-hd .cv-chips svg{color:#c4b5fd}
+.cv-tresd h2{color:#7c3aed;border-color:#7c3aed}.cv-tresd section{margin-bottom:10px}.cv-tresd .ent{margin-bottom:6px}
+
+/* Prog */
+.cv-prog{--acc:#059669;--cvT:#0c1b1f;--cvS:#047857;--cvST:#0c1b1f;--cvSK:#d1fae5;--cvSKT:#064e3b;font-family:'IBM Plex Mono',monospace}
+.cv-prog .cv-hd{border-bottom:1px dashed #059669;padding-bottom:12px}
+.cv-prog .cv-tag,.cv-prog .ent-t,.cv-prog .sk span{font-family:'IBM Plex Mono',monospace}
+.cv-prog h2{color:#059669;border:0;border-bottom:1px dashed #059669;display:block;padding-bottom:4px}
+.cv-prog .ent-t{font-weight:600}#cvpg.cv-prog{font-size:8.2pt;line-height:1.38}
+
+/* Technical Artist */
+.cv-ta{--acc:#e11d48;--cvT:#0f172a;--cvS:#9f1239;--cvST:#0f172a;--cvSK:#ffe4e6;--cvSKT:#9f1239;font-family:'Inter',sans-serif}
+.cv-ta .cv-hd{display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:start;background:#0f172a;color:#fff;padding:14px 16px;margin:-6mm -8mm 14px;border:0;border-radius:0 0 10px 10px}
+.cv-ta .cv-hd h1{color:#fff;margin-bottom:3px;font-size:1.5rem;letter-spacing:-.01em}
+.cv-ta .cv-tag{color:#fda4af;margin-bottom:0}
+.cv-ta .cv-chips{grid-column:1/-1;color:#cbd5e1;gap:10px}
+.cv-ta .cv-chips svg{color:#f43f5e}.cv-ta .cv-chips a{color:#e2e8f0}
+.cv-ta .ta-reel{display:flex;align-items:center;gap:7px;background:#e11d48;color:#fff;padding:8px 14px;border-radius:8px;font:700 .72rem 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;text-decoration:none;align-self:center}
+.cv-ta .ta-reel:hover{background:#be123c}
+.cv-ta section{margin-bottom:12px;padding-left:11px;border-left:3px solid var(--acc)}
+.cv-ta h2{color:#0f172a;border:0;padding:0 0 5px;margin-bottom:7px;text-transform:uppercase;letter-spacing:.09em;font-size:.74rem;font-family:'IBM Plex Mono',monospace}
+.cv-ta .ent{margin-bottom:8px}.cv-ta .ent-t{font-weight:700;color:#0f172a}
+.cv-ta .ent-s{color:var(--cvS);font-size:.8rem;font-weight:500}
+.cv-ta .ent-m{font-family:'IBM Plex Mono',monospace;font-size:.74rem;color:#64748b}.cv-ta .ent-d{color:#334155}
+.cv-ta .ta-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cv-ta .ta-spec{background:#fff1f2;border:1px solid #fecdd3;border-radius:7px;padding:6px 9px;break-inside:avoid}
+.cv-ta .ta-spec b{display:block;font-size:.8rem;color:#9f1239;margin-bottom:1px}
+.cv-ta .ta-spec span{font-size:.72rem;color:#64748b;line-height:1.35;display:block}
+.cv-ta .sk-grp{font-size:.8rem}
+.cv-ta .sk-grp .grp{display:grid;grid-template-columns:112px 1fr;gap:4px 10px;padding:4px 0;border-bottom:1px dashed #e2e8f0;break-inside:avoid}
+.cv-ta .sk-grp .grp:last-child{border-bottom:0}
+.cv-ta .sk-grp .grp-k{font:600 .68rem 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--cvS);padding-top:1px}
+.cv-ta .sk-grp .grp-v{color:#334155}
+.cv-ta .sk-grp .grp-v i{font-style:normal;background:var(--cvSK);color:var(--cvSKT);padding:1px 7px;border-radius:5px;font-size:.72rem;display:inline-block;margin:0 4px 4px 0}
+#cvpg.cv-ta{font-size:9.2pt;line-height:1.45}
+
+@media(max-width:900px){.layout{flex-direction:column}.editor{width:100%!important;max-width:none;border-right:0;border-bottom:1px solid var(--bd)}.resizer{display:none}.topbar{height:auto;padding:8px 12px;flex-wrap:wrap}.tabs{margin-left:0;order:3;width:100%;justify-content:center}.acts{order:4;width:100%;justify-content:center}#reviewPanel>div{grid-template-columns:1fr!important}}
+@media(max-width:600px){.g2{grid-template-columns:1fr}.sheet{width:100%;min-height:auto;zoom:1}#cvpg{padding:12mm}}
+@media print{
+html,body{height:auto!important;overflow:visible!important;background:#fff}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.topbar,.editor,.resizer,.pvb,.toast{display:none!important}
+.layout{flex-direction:column;overflow:visible;height:auto}.pv{overflow:visible;flex:none}
+.stage{padding:0;background:none;overflow:visible;display:block}
+.sheet{width:auto;min-height:0;box-shadow:none;zoom:1!important;margin:0}#cvpg{padding:0}
+.cv-dis .cv-hd,.cv-tresd .cv-hd{margin:0 0 12px;padding:9mm 8mm 12px;clip-path:none;border-radius:0}
+.cv-ta .cv-hd{margin:0 0 14px;padding:12px 14px;border-radius:0 0 8px 8px}
+.cv .ent,.cv .cert-row,.cv .cv-hd,.cv .sk,.cv-ats .sk-ats,.cv-ta .ta-spec,.cv-ta .sk-grp .grp{break-inside:avoid;page-break-inside:avoid}
+.cv h2,.cv .ent-h{break-after:avoid;page-break-after:avoid}
+#cvpg p,#cvpg li{orphans:3;widows:3}
+@page{margin:14mm 16mm;size:A4}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="logo">
+    <img src="favicon.svg" alt="CV Studio" width="28" height="28" onerror="this.style.display='none'">
+    <div class="logo-t"><b>CV Studio</b><small>Generador de CVs profesionales</small></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" id="tabEdit">✏️ Editar</button>
+    <button class="tab" id="tabView">👁 Vista previa</button>
+    <button class="tab" id="tabReview">🔎 Revisar CV</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="acts">
+    <button class="btn" id="saveBtn">💾 Guardar</button>
+    <button class="btn" id="restoreBtn">📂 Restaurar</button>
+    <button class="btn" id="exportBtn">📤 Exportar</button>
+    <button class="btn" id="importBtn">📥 Importar</button>
+    <button class="btn" id="sampleBtn">📄 Ejemplo</button>
+    <button class="btn gh" id="resetBtn" title="Borrar todo">🔄</button>
+    <button class="btn pri" id="printBtn">⬇️ Descargar PDF</button>
+    <input type="file" id="fileIn" accept=".json" style="display:none">
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="editor" id="editor">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;gap:8px;align-items:center;flex-shrink:0">
+      <div id="langBtns" style="display:flex;gap:4px">
+        <button class="btn sm lb on" data-lang="es">ES</button>
+        <button class="btn sm lb" data-lang="en">EN</button>
+      </div>
+      <small id="langHint" style="color:var(--tx3);font-size:.72rem;line-height:1.3"></small>
+    </div>
+    <div id="edBody">
+      <div id="meter"></div>
+      <div id="forms"></div>
+    </div>
+  </aside>
+  <div class="resizer" id="rsz"></div>
+  <main class="pv">
+    <div class="pvb">
+      <div class="pills" id="pills">
+        <button class="pill on" data-t="ats">📄 ATS</button>
+        <button class="pill" data-t="dis">🎨 Diseño</button>
+        <button class="pill" data-t="web">🌐 Web / UI</button>
+        <button class="pill" data-t="tresd">🧊 3D / Tech</button>
+        <button class="pill" data-t="prog">💻 Programación</button>
+        <button class="pill" data-t="ta">🎬 Technical Artist</button>
+      </div>
+      <div class="acc-pick"><label>Acento</label><input type="color" id="accIn" value="#6366f1"></div>
+      <div class="zoom">
+        <button class="ib" id="zOut">−</button>
+        <span class="zv" id="zVal">100%</span>
+        <button class="ib" id="zIn">+</button>
+      </div>
+      <button class="btn" id="atsBtn" title="Ver el texto plano que lee un ATS">🔎 Test ATS</button>
+    </div>
+    <div class="stage" id="stage">
+      <div class="sheet"><div id="cvpg" class="cv cv-ats"></div></div>
+    </div>
+  </main>
+</div>
+
+<section id="reviewPanel" style="display:none;flex:1;overflow:auto;background:var(--bg2);padding:24px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b style="font-family:var(--fh)">CV a revisar</b><label class="btn sm" style="cursor:pointer">📄 Cargar .txt<input type="file" id="revFile" accept=".txt,.md,.csv,.json" style="display:none"></label></div>
+        <textarea id="revCv" placeholder="Pega aquí el texto del CV (copiado desde PDF/Word/LinkedIn). Para mejor resultado, usa texto plano." style="width:100%;min-height:260px;resize:vertical;padding:10px;border:1px solid var(--bd);border-radius:var(--r1);font:13px/1.5 var(--fm);color:var(--tx)"></textarea>
+      </div>
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px">
+        <b style="font-family:var(--fh);display:block;margin-bottom:10px">Oferta / palabras clave (opcional)</b>
+        <textarea id="revJd" placeholder="Pega la descripción de la oferta para comparar palabras clave…" style="width:100%;min-height:140px;resize:vertical;padding:10px;border:1px solid var(--bd);border-radius:var(--r1);font:13px/1.5 var(--fs);color:var(--tx)"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn pri" id="revRun">Analizar ATS</button>
+          <button class="btn" id="revClear">Limpiar</button>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px;min-height:420px">
+      <b style="font-family:var(--fh);display:block;margin-bottom:12px">Resultado del análisis</b>
+      <div id="revOut" style="font-size:.86rem;color:var(--tx2);line-height:1.5">
+        <div style="color:var(--tx3)">Pega un CV y pulsa <b>Analizar ATS</b>. El análisis se hace localmente en tu navegador.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="atsModal">
+  <div class="modal-b">
+    <div class="modal-h"><b>Test ATS — texto plano que lee el parser</b><button class="ib" id="atsClose">✕</button></div>
+    <div class="ats-status" id="atsStatus"></div>
+    <div class="ats-jd">
+      <textarea id="atsJD" placeholder="Pega aquí la oferta de empleo para comparar palabras clave (opcional)…"></textarea>
+      <button class="btn" id="atsCompare">Comparar</button>
+    </div>
+    <div class="ats-kw" id="atsKw"></div>
+    <pre id="atsTxt"></pre>
+    <div class="modal-f">
+      <button class="btn" id="atsCopy">Copiar</button>
+      <span class="ats-hint">Pégalo en el Bloc de Notas: si se lee en orden, el ATS también.</span>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const I={
+  mail:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>',
+  phone:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  pin:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+  link:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  chev:'<svg class="cv" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>',
+  user:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  brief:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  edu:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+  wrench:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  globe:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  award:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
+  book:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>',
+  star:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  layers:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+  play:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg>'
+};
+
+const LBL={
+es:{nombre:'Nombre completo',titulo:'Título profesional',email:'Email',tel:'Teléfono',ubi:'Ubicación',lin:'LinkedIn',port:'Portafolio',web:'GitHub / Portafolio',res:'Resumen profesional',
+puesto:'Puesto',emp:'Empresa',ini:'Inicio',fin:'Fin',desc:'Descripción de deberes',ach:'Logros (uno por línea)',grad:'Título / Grado',inst:'Institución',anio:'Año',
+sk:'Habilidades (coma separadas)',lvl:'Nivel',cert:'Certificación',emisor:'Emisor',pub:'Publicación',fecha:'Fecha',proj:'Proyecto',
+addExp:'+ Añadir experiencia',addEdu:'+ Añadir educación',addCert:'+ Añadir certificación',addPub:'+ Añadir publicación',addProj:'+ Añadir proyecto',
+sec1:'Datos personales',sec2:'Experiencia',sec3:'Educación',sec4:'Habilidades',sec5:'Idiomas',sec6:'Certificaciones',sec7:'Publicaciones',sec8:'Proyectos',sec9:'Especializaciones',
+tip1:'Incluye tu nombre real, título claro y contacto verificable.',tip2:'Empieza con verbos de acción e incluye métricas.',tip3:'Formación más relevante primero.',tip4:'Lista habilidades técnicas y blandas relevantes.',
+tip5:'Especifica nivel: Nativo, Avanzado, Intermedio, Básico.',tip6:'Solo certificaciones relevantes.',tip7:'Incluye enlaces a publicaciones destacadas.',tip8:'Proyectos con impacto medible.',
+tip9:'Áreas de especialización del Technical Artist: shading, tools, pipeline, optimización, look-dev, VFX…',
+spc:'Nombre del área',spcD:'Detalle / tecnologías',addSpc:'+ Añadir especialización',spcS:'Especializaciones',skg:'Skills agrupados por categoría',reel:'Reel / Portafolio',
+meter:'Perfil completado',del:'Eliminar',sample:'Ejemplo cargado',saved:'Datos guardados',restored:'Sesión restaurada',reset:'Formulario borrado',imported:'Sesión importada',exported:'Exportando...',
+ph:'Ej. Diseñadora Senior',ph2:'Nombre de la empresa',ph3:'Ene 2022',ph4:'Actualidad',
+exp:'Experiencia',expP:'Experiencia profesional',eduS:'Educación',skills:'Habilidades',langs:'Idiomas',certS:'Certificaciones',pubs:'Publicaciones',projs:'Proyectos'},
+en:{nombre:'Full name',titulo:'Job title',email:'Email',tel:'Phone',ubi:'Location',lin:'LinkedIn',port:'Portfolio',web:'GitHub / Portfolio',res:'Professional summary',
+puesto:'Position',emp:'Company',ini:'Start',fin:'End',desc:'Job description',ach:'Achievements (one per line)',grad:'Degree / Title',inst:'Institution',anio:'Year',
+sk:'Skills (comma separated)',lvl:'Level',cert:'Certification',emisor:'Issuer',pub:'Publication',fecha:'Date',proj:'Project',
+addExp:'+ Add experience',addEdu:'+ Add education',addCert:'+ Add certification',addPub:'+ Add publication',addProj:'+ Add project',
+sec1:'Personal details',sec2:'Experience',sec3:'Education',sec4:'Skills',sec5:'Languages',sec6:'Certifications',sec7:'Publications',sec8:'Projects',sec9:'Specializations',
+tip1:'Include your real name, a clear title and verifiable contact info.',tip2:'Start with action verbs and include metrics.',tip3:'List most relevant education first.',tip4:'List technical and soft skills.',
+tip5:'Specify proficiency: Native, Advanced, Intermediate, Basic.',tip6:'Only include relevant certifications.',tip7:'Include links to notable publications.',tip8:'Projects with measurable impact.',
+tip9:'Technical Artist focus areas: shading, tools, pipeline, optimization, look-dev, VFX…',
+spc:'Focus area name',spcD:'Detail / technologies',addSpc:'+ Add specialization',spcS:'Specializations',skg:'Skills grouped by category',reel:'Reel / Portfolio',
+meter:'Profile completed',del:'Delete',sample:'Sample loaded',saved:'Data saved',restored:'Session restored',reset:'Form cleared',imported:'Session imported',exported:'Exporting...',
+ph:'e.g. Senior Designer',ph2:'Company name',ph3:'Jan 2022',ph4:'Present',
+exp:'Experience',expP:'Professional Experience',eduS:'Education',skills:'Skills',langs:'Languages',certS:'Certifications',pubs:'Publications',projs:'Projects'}
+};
+
+let S={lang:'es',tpl:'ats',acc:'#6366f1',zoom:1,mode:'edit',docs:{},
+p:{nombre:'',titulo:'',email:'',tel:'',ubi:'',lin:'',port:'',web:'',res:''},
+exp:[],edu:[],skills:[],langs:[],certs:[],pubs:[],projs:[],specs:[]};
+
+const DOC_KEYS=['exp','edu','skills','langs','certs','pubs','projs','specs'];
+const clone=o=>JSON.parse(JSON.stringify(o));
+function emptyDoc(){return {p:{nombre:'',titulo:'',email:'',tel:'',ubi:'',lin:'',port:'',web:'',res:''},exp:[],edu:[],skills:[],langs:[],certs:[],pubs:[],projs:[],specs:[]}}
+function normalizeDoc(d){const o=emptyDoc(); if(d&&d.p)o.p=Object.assign(o.p,d.p); DOC_KEYS.forEach(k=>{if(d&&Array.isArray(d[k]))o[k]=d[k]}); return o}
+function docEmpty(d){if(!d)return true; return !d.p.nombre&&!d.p.res&&!d.p.email&&!d.exp.length&&!d.skills.length}
+function snapshot(){if(!S.docs)S.docs={}; const d={p:clone(S.p||{})}; DOC_KEYS.forEach(k=>{d[k]=clone(S[k]||[])}); S.docs[S.lang]=d}
+function applyDoc(doc){const d=normalizeDoc(clone(doc||emptyDoc())); S.p=d.p; DOC_KEYS.forEach(k=>{S[k]=d[k]})}
+
+function switchLang(l){
+  if(l!==S.lang){
+    snapshot();
+    if(docEmpty(S.docs[l])){
+      const src=S.docs[S.lang];
+      S.docs[l]=docEmpty(src)?emptyDoc():clone(src);
+      if(!docEmpty(src))toast('if',l==='en'?'English creado como copia: tradúcelo y edítalo. Ya es independiente de Español.':'Español creado como copia: tradúcelo y edítalo. Ya es independiente de English.');
+    }
+    applyDoc(S.docs[l]); S.lang=l;
+  }
+  document.querySelectorAll('.lb').forEach(x=>x.classList.toggle('on',x.dataset.lang===S.lang));
+  renderAll(); persist();
+}
+
+function statePayload(){snapshot(); const o={version:2,rev:S.rev||0,lang:S.lang,tpl:S.tpl,acc:S.acc,zoom:S.zoom,mode:S.mode,docs:S.docs}; if(S.fit===false)o.fit=false; return o}
+function loadState(d){
+  if(!d)return;
+  if(d.tpl)S.tpl=d.tpl; if(d.acc)S.acc=d.acc; if(d.zoom)S.zoom=d.zoom; if(d.mode)S.mode=d.mode;
+  if(d.rev!==undefined)S.rev=+d.rev||0; if(d.fit!==undefined)S.fit=d.fit;
+  S.lang=(d.lang==='en')?'en':'es';
+  if(d.docs&&typeof d.docs==='object'){S.docs={}; ['es','en'].forEach(k=>{if(d.docs[k])S.docs[k]=normalizeDoc(d.docs[k])});}
+  else{S.docs={es:normalizeDoc(d)};}
+  if(!S.docs[S.lang]){const other=S.lang==='en'?'es':'en'; S.docs[S.lang]=S.docs[other]?clone(S.docs[other]):emptyDoc();}
+  applyDoc(S.docs[S.lang]);
+}
+
+function t(k){return (LBL[S.lang]&&LBL[S.lang][k])||k||''}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function toHref(v){v=String(v||'').trim();return /^https?:\/\//i.test(v)?v:'https://'+v.replace(/^\/+/,'')}
+function aLink(v){const full=toHref(v);const short=String(v||'').trim().replace(/^https?:\/\//i,'').replace(/^www\./i,'').replace(/\/$/,''); return `<a href="${esc(full)}" target="_blank" rel="noopener">${esc(short)}</a>`}
+function getPath(p){return p.split('.').reduce((o,k)=>o&&o[k]!==undefined?o[k]:'',S)}
+function setPath(p,v){const keys=p.split('.');let o=S; for(let i=0;i<keys.length-1;i++)o=o[keys[i]]; o[keys[keys.length-1]]=v}
+
+function renderAll(){
+  const ai=document.getElementById('accIn'); if(ai&&/^#[0-9a-f]{6}$/i.test(S.acc||''))ai.value=S.acc;
+  document.querySelectorAll('.pill').forEach(x=>x.classList.toggle('on',x.dataset.t===S.tpl));
+  document.querySelectorAll('.lb').forEach(x=>x.classList.toggle('on',x.dataset.lang===S.lang));
+  const lh=document.getElementById('langHint');
+  if(lh)lh.textContent=S.lang==='en'?'English and Spanish are separate documents: editing here does not change the Spanish version.':'Español e English son documentos separados: editar aquí no cambia la versión en inglés.';
+  renderMeter(); renderForms(); renderCV();
+}
+
+function renderMeter(){
+  let filled=0,total=0; const p=S.p;
+  ['nombre','titulo','email','tel','ubi','res'].forEach(k=>{total++;if(p[k])filled++});
+  total+=2;if(S.exp.length)filled++; total++; if(S.edu.length)filled++; total++; if(S.skills.length>2)filled++; total++; if(S.langs.length)filled++;
+  const pct=Math.round(filled/total*100);
+  document.getElementById('meter').innerHTML=`<div class="meter"><div class="meter-t"><span>${t('meter')}</span><b>${pct}%</b></div><div class="bar"><i style="width:${pct}%"></i></div></div>`;
+}
+
+function fld(lbl,path,ph,ta){
+  const v=getPath(path)||'';
+  return `<div class="fld"><label>${esc(lbl)}</label>${ta?`<textarea data-p="${esc(path)}" rows="3" placeholder="${esc(ph||'')}">${esc(v)}</textarea>`:`<input type="text" data-p="${esc(path)}" value="${esc(v)}" placeholder="${esc(ph||'')}">`}</div>`;
+}
+
+function listSection(icon,title,listKey,fields,addLbl){
+  let items='';
+  S[listKey].forEach((_,i)=>{
+    let body='';
+    fields.forEach(f=>{
+      const path=`${listKey}.${i}.${f.k}`;
+      if(f.ta) body+=fld(f.lbl,path,f.ph,true);
+      else body+=`<div class="fld"><label>${esc(f.lbl)}</label><input type="text" data-p="${esc(path)}" value="${esc(getPath(path))}" placeholder="${esc(f.ph||'')}"></div>`;
+    });
+    items+=`<div class="item"><div class="item-h"><b>${esc(fields[0].lbl)} ${i+1}</b><button class="btn sm dgr" data-del="${listKey}" data-i="${i}">✕ ${t('del')}</button></div>${body}</div>`;
+  });
+  const tipK=listKey==='specs'?'9':(listKey==='exp'?'2':listKey==='edu'?'3':listKey==='langs'?'5':listKey==='certs'?'6':listKey==='pubs'?'7':listKey==='projs'?'8':'1');
+  return `<details class="sec"><summary>${icon} ${esc(title)}<span style="margin-left:auto;font-size:.72rem;color:var(--tx3)">${S[listKey].length}</span>${I.chev}</summary><div class="sec-b"><div class="sec-tip">${t('tip'+tipK)}</div>${items}<button class="add" data-add="${listKey}">${esc(addLbl)}</button></div></details>`;
+}
+
+function renderForms(){
+  const c=document.getElementById('forms'); let h='';
+  h+=`<details class="sec" open><summary>${I.user} ${t('sec1')}${I.chev}</summary><div class="sec-b"><div class="sec-tip">${t('tip1')}</div>`;
+  h+=fld(t('nombre'),'p.nombre'); h+=fld(t('titulo'),'p.titulo');
+  h+=`<div class="g2">${fld(t('email'),'p.email')}${fld(t('tel'),'p.tel')}</div>`;
+  h+=fld(t('ubi'),'p.ubi'); h+=fld(t('lin'),'p.lin'); h+=fld(t('port'),'p.port'); h+=fld(t('web'),'p.web');
+  h+=fld(t('res'),'p.res','',true);
+  h+=`</div></details>`;
+
+  h+=listSection(I.brief,t('sec2'),'exp',[
+    {k:'puesto',lbl:t('puesto'),ph:t('ph')},{k:'emp',lbl:t('emp'),ph:t('ph2')},
+    {k:'ini',lbl:t('ini'),ph:t('ph3')},{k:'fin',lbl:t('fin'),ph:t('ph4')},
+    {k:'desc',lbl:t('desc'),ph:'',ta:true},{k:'ach',lbl:t('ach'),ph:'',ta:true}
+  ],t('addExp'));
+
+  h+=listSection(I.edu,t('sec3'),'edu',[
+    {k:'grad',lbl:t('grad')},{k:'inst',lbl:t('inst')},{k:'anio',lbl:t('anio'),ph:'2024'}
+  ],t('addEdu'));
+
+  h+=`<details class="sec" open><summary>${I.wrench} ${t('sec4')}<span style="margin-left:auto;font-size:.72rem;color:var(--tx3)">${S.skills.length}</span>${I.chev}</summary><div class="sec-b"><div class="sec-tip">${t('tip4')}</div>`;
+  h+=`<div class="fld"><label>${t('sk')}</label><input type="text" id="skIn" placeholder="${esc(t('sk'))}"></div>`;
+  h+=`<div id="skList">${S.skills.map((s,i)=>`<span class="skill-tag">${esc(s)}<button data-delsk="${i}">✕</button></span>`).join('')}</div></div></details>`;
+
+  h+=listSection(I.globe,t('sec5'),'langs',[{k:'lang',lbl:t('langs')},{k:'lvl',lbl:t('lvl')}],'+ '+t('langs'));
+  h+=listSection(I.award,t('sec6'),'certs',[{k:'cert',lbl:t('cert')},{k:'emisor',lbl:t('emisor')},{k:'anio',lbl:t('anio'),ph:'2024'}],t('addCert'));
+  h+=listSection(I.book,t('sec7'),'pubs',[{k:'pub',lbl:t('pub')},{k:'fecha',lbl:t('fecha')},{k:'link',lbl:'Link',ph:'https://...'}],t('addPub'));
+  h+=listSection(I.star,t('sec8'),'projs',[{k:'proj',lbl:t('proj')},{k:'desc',lbl:t('desc'),ta:true}],t('addProj'));
+
+  if(S.tpl==='ta'){
+    h+=listSection(I.layers,t('sec9'),'specs',[{k:'n',lbl:t('spc'),ph:'Shading / Look-dev'},{k:'d',lbl:t('spcD'),ph:'HLSL, Shader Graph, URP/HDRP'}],t('addSpc'));
+  }
+
+  c.innerHTML=h; bindFormEvents();
+}
+
+let persistT;
+function persist(){clearTimeout(persistT);persistT=setTimeout(()=>{try{localStorage.setItem('cvstudio',JSON.stringify(statePayload()))}catch(e){}},700)}
+
+function bindFormEvents(){
+  document.querySelectorAll('[data-p]').forEach(el=>el.addEventListener('input',e=>{setPath(e.target.dataset.p,e.target.value);renderCV();renderMeter();persist()}));
+  document.querySelectorAll('[data-add]').forEach(btn=>btn.addEventListener('click',()=>{
+    const k=btn.dataset.add;
+    const tpl={exp:{puesto:'',emp:'',ini:'',fin:'',desc:'',ach:''},edu:{grad:'',inst:'',anio:''},langs:{lang:'',lvl:''},certs:{cert:'',emisor:'',anio:''},pubs:{pub:'',fecha:'',link:''},projs:{proj:'',desc:''},specs:{n:'',d:''}};
+    S[k].push({...tpl[k]}); renderAll(); persist();
+  }));
+  document.querySelectorAll('[data-del]').forEach(btn=>btn.addEventListener('click',()=>{S[btn.dataset.del].splice(+btn.dataset.i,1);renderAll();persist()}));
+  document.querySelectorAll('[data-delsk]').forEach(btn=>btn.addEventListener('click',()=>{S.skills.splice(+btn.dataset.delsk,1);renderAll();persist()}));
+  const skIn=document.getElementById('skIn');
+  if(skIn) skIn.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); const vals=skIn.value.split(',').map(v=>v.trim()).filter(Boolean); if(vals.length){S.skills.push(...vals);renderAll();persist();}}});
+}
+
+function paperAccent(hex){
+  const m=/^#?([0-9a-f]{6})$/i.exec(String(hex||'').trim()); if(!m)return '#2563eb';
+  let r=parseInt(m[1].slice(0,2),16)/255,g=parseInt(m[1].slice(2,4),16)/255,b=parseInt(m[1].slice(4,6),16)/255;
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h=0,s=0,l=(mx+mn)/2;
+  if(mx!==mn){const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn); h=mx===r?((g-b)/d+(g<b?6:0)):mx===g?((b-r)/d+2):((r-g)/d+4);h/=6}
+  if(s<0.25)s=0.25;
+  const hue2rgb=(p,q,t)=>{t=(t+1)%1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};
+  const to=v=>Math.round(v*255).toString(16).padStart(2,'0');
+  const build=ll=>{const q2=ll<0.5?ll*(1+s):ll+s-ll*s,p2=2*ll-q2; return '#'+to(hue2rgb(p2,q2,h+1/3))+to(hue2rgb(p2,q2,h))+to(hue2rgb(p2,q2,h-1/3))};
+  let out=build(l);
+  for(let ll=Math.min(l,.55);ll>=0.18;ll-=0.02){const c=build(ll),rr=parseInt(c.slice(1,3),16)/255,gg=parseInt(c.slice(3,5),16)/255,bb=parseInt(c.slice(5,7),16)/255;
+    const lum=0.2126*(rr<=.03928?rr/12.92:Math.pow((rr+.055)/1.055,2.4))+0.7152*(gg<=.03928?gg/12.92:Math.pow((gg+.055)/1.055,2.4))+0.0722*(bb<=.03928?bb/12.92:Math.pow((bb+.055)/1.055,2.4));
+    out=c; if(1.05/(lum+.05)>=4.5)break;
+  }
+  return out;
+}
+const SHEET_W=793.7;
+function fitScale(){const st=document.getElementById('stage'); if(!st)return 1; const avail=st.clientWidth-64; return Math.max(.4,Math.min(1,Math.round((avail/SHEET_W)*100)/100))}
+
+function renderCV(){
+  const el=document.getElementById('cvpg');
+  el.className='cv cv-'+S.tpl;
+  el.style.setProperty('--acc',paperAccent(S.acc));
+  const scale=(S.fit===false)?S.zoom:fitScale();
+  el.parentElement.style.setProperty('--cvzoom',scale);
+  const zv=document.getElementById('zVal'); if(zv)zv.textContent=Math.round(scale*100)+'%';
+
+  const p=S.p; const ats=S.tpl==='ats'; const ta=S.tpl==='ta';
+  let hd;
+  if(ats){
+    const g1=[p.email,p.tel,p.ubi].filter(Boolean);
+    const g2=[p.lin,p.port].filter(Boolean);
+    const g3=[p.web].filter(Boolean);
+    const mk=(arr,isLink)=>arr.map((v,i)=>`<span>${isLink?aLink(v):esc(v)}${i<arr.length-1?' |':''}</span>`).join(' ');
+    let contact=''; if(g1.length)contact+=`<div class="cv-ats-contact">${mk(g1,false)}</div>`;
+    if(g2.length)contact+=`<div class="cv-ats-contact sub">${mk(g2,true)}</div>`;
+    if(g3.length)contact+=`<div class="cv-ats-contact sub">${mk(g3,true)}</div>`;
+    hd=`<div class="cv-hd"><h1>${esc(p.nombre)||'—'}</h1><div class="cv-tag">${esc(p.titulo)}</div>${contact}</div>`;
+  }else if(ta){
+    const chips=[p.email&&`${I.mail}${esc(p.email)}`,p.tel&&`${I.phone}${esc(p.tel)}`,p.ubi&&`${I.pin}${esc(p.ubi)}`,p.lin&&`${I.link}${aLink(p.lin)}`,p.web&&`${I.link}${aLink(p.web)}`].filter(Boolean).join('');
+    const reel=p.port?`<a class="ta-reel" href="${esc(toHref(p.port))}" target="_blank" rel="noopener">${I.play}<b>${t('reel')}</b></a>`:'';
+    hd=`<div class="cv-hd"><div><h1>${esc(p.nombre)||'—'}</h1><div class="cv-tag">${esc(p.titulo)}</div></div>${reel}<div class="cv-chips">${chips}</div></div>`;
+  }else{
+    hd=`<div class="cv-hd"><h1>${esc(p.nombre)||'—'}</h1><div class="cv-tag">${esc(p.titulo)}</div><div class="cv-chips">`;
+    if(p.email)hd+=`<span>${I.mail}${esc(p.email)}</span>`;
+    if(p.tel)hd+=`<span>${I.phone}${esc(p.tel)}</span>`;
+    if(p.ubi)hd+=`<span>${I.pin}${esc(p.ubi)}</span>`;
+    if(p.lin)hd+=`<span>${I.link}${aLink(p.lin)}</span>`;
+    if(p.port)hd+=`<span>${I.link}${aLink(p.port)}</span>`;
+    if(p.web)hd+=`<span>${I.link}${aLink(p.web)}</span>`;
+    hd+=`</div></div>`;
+  }
+
+  const res=p.res?`<section><h2>${t('res')}</h2><div class="ent-d">${esc(p.res).replace(/\n/g,'<br>')}</div></section>`:'';
+
+  let exp='';
+  if(S.exp.length){
+    exp=`<section><h2>${ats?t('expP'):t('exp')}</h2>`;
+    S.exp.forEach(e=>{
+      if(ats) exp+=`<div class="ent"><div class="ent-t">${esc(e.puesto)}</div><div class="ent-s">${esc(e.emp)} | ${esc(e.ini)} – ${esc(e.fin)}</div>`;
+      else exp+=`<div class="ent"><div class="ent-h"><span class="ent-t">${esc(e.puesto)}</span><span class="ent-m">${esc(e.ini)} – ${esc(e.fin)}</span></div><div class="ent-s">${esc(e.emp)}</div>`;
+      if(e.desc)exp+=`<div class="ent-d">${esc(e.desc).replace(/\n/g,'<br>')}</div>`;
+      if(e.ach)exp+=`<div class="ent-d"><ul>${e.ach.split('\n').filter(Boolean).map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>`;
+      exp+=`</div>`;
+    });
+    exp+=`</section>`;
+  }
+
+  let proj='';
+  if(S.projs.length){
+    proj=`<section><h2>${t('projs')}</h2>`;
+    S.projs.forEach(pr=>{proj+=`<div class="ent"><div class="ent-t">${esc(pr.proj)}</div><div class="ent-d">${esc(pr.desc||'').replace(/\n/g,'<br>')}</div></div>`});
+    proj+=`</section>`;
+  }
+
+  let edu='';
+  if(S.edu.length){
+    edu=`<section><h2>${t('eduS')}</h2>`;
+    S.edu.forEach(e=>{
+      edu+=ats?`<div class="ent"><div class="ent-t">${esc(e.grad)}</div><div class="ent-s">${esc(e.inst)} | ${esc(e.anio)}</div></div>`
+              :`<div class="ent"><div class="ent-h"><span class="ent-t">${esc(e.grad)}</span><span class="ent-m">${esc(e.anio)}</span></div><div class="ent-s">${esc(e.inst)}</div></div>`;
+    });
+    edu+=`</section>`;
+  }
+
+  let specs='';
+  if(ta&&S.specs.length){
+    specs=`<section><h2>${t('spcS')}</h2><div class="ta-specs">`;
+    S.specs.forEach(sp=>{specs+=`<div class="ta-spec"><b>${esc(sp.n)}</b>${sp.d?`<span>${esc(sp.d)}</span>`:''}</div>`});
+    specs+=`</div></section>`;
+  }
+
+  let skills='';
+  if(S.skills.length){
+    if(ats){
+      skills=`<section><h2>${t('skills')}</h2><div class="sk-ats">${S.skills.map(s=>`<div>${esc(s)}</div>`).join('')}</div></section>`;
+    }else if(ta){
+      const grps=[]; S.skills.forEach(s=>{const i=String(s).indexOf(':'); if(i>0)grps.push([String(s).slice(0,i).trim(),String(s).slice(i+1).split(',').map(x=>x.trim()).filter(Boolean)]); else grps.push(['',String(s).split(',').map(x=>x.trim()).filter(Boolean)]);});
+      skills=`<section><h2>${t('skills')}</h2><div class="sk-grp">`+grps.map(([k,v])=>`<div class="grp">${k?`<span class="grp-k">${esc(k)}</span>`:'<span class="grp-k"></span>'}<span class="grp-v">${v.map(x=>`<i>${esc(x)}</i>`).join('')}</span></div>`).join('')+`</div></section>`;
+    }else{
+      skills=`<section><h2>${t('skills')}</h2><div class="sk">${S.skills.map(s=>`<span>${esc(s)}</span>`).join('')}</div></section>`;
+    }
+  }
+
+  let certs='';
+  if(S.certs.length){
+    certs=`<section><h2>${t('certS')}</h2>`;
+    S.certs.forEach(c=>{
+      certs+=ats?`<div class="cert-row">${esc(c.cert)} — ${esc(c.emisor)} | ${esc(c.anio)}</div>`
+               :`<div class="cert-row"><span class="cert-t">${esc(c.cert)}</span><span class="cert-m">— ${esc(c.emisor)} · ${esc(c.anio)}</span></div>`;
+    });
+    certs+=`</section>`;
+  }
+
+  let langs='';
+  if(S.langs.length){
+    langs=`<section><h2>${t('langs')}</h2>`;
+    if(ats) langs+=`<div class="ent-s">${S.langs.map(l=>`${esc(l.lang)} — ${esc(l.lvl)}`).join(' · ')}</div>`;
+    else S.langs.forEach(l=>{langs+=`<div class="ent"><div class="ent-h"><span class="ent-t">${esc(l.lang)}</span><span class="ent-m">${esc(l.lvl)}</span></div></div>`});
+    langs+=`</section>`;
+  }
+
+  let pubs='';
+  if(S.pubs.length){
+    pubs=`<section><h2>${t('pubs')}</h2>`;
+    S.pubs.forEach(pu=>{pubs+=`<div class="ent"><div class="ent-h"><span class="ent-t">${esc(pu.pub)}</span><span class="ent-m">${esc(pu.fecha)}</span></div>${pu.link?`<div class="ent-d">${aLink(pu.link)}</div>`:''}</div>`});
+    pubs+=`</section>`;
+  }
+
+  const parts = ats ? [res,exp,proj,edu,skills,certs,langs,pubs]
+              : ta  ? [res,specs,exp,proj,skills,edu,certs,langs,pubs]
+              :       [res,exp,edu,skills,langs,certs,pubs,proj];
+  el.innerHTML=hd+parts.join('');
+}
+
+let toastTimer;
+function toast(cls,msg){const el=document.getElementById('toast'); el.className='toast on '+cls; el.textContent=msg; clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.className='toast',3000)}
+
+function save(){localStorage.setItem('cvstudio',JSON.stringify(statePayload()));toast('ok',t('saved'))}
+function restore(){const d=localStorage.getItem('cvstudio');if(d){try{loadState(JSON.parse(d));renderAll();toast('if',t('restored'))}catch(e){toast('er','Error')}}}
+function reset(){if(!confirm('¿Borrar el contenido de este idioma? (el otro idioma se conserva)'))return; const e=emptyDoc(); S.p=e.p; DOC_KEYS.forEach(k=>{S[k]=[]}); snapshot(); renderAll(); toast('if',t('reset'))}
+function exportJSON(){const b=new Blob([JSON.stringify(statePayload(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='cv-studio.json'; a.click(); toast('ok','Exportado')}
+function importJSON(f){const r=new FileReader(); r.onload=e=>{try{loadState(JSON.parse(e.target.result));renderAll();toast('ok',t('imported'))}catch(x){toast('er','Error')}}; r.readAsText(f)}
+
+function setTopTab(mode){
+  S.mode=mode;
+  ['tabEdit','tabView','tabReview'].forEach(id=>{const el=document.getElementById(id); if(el) el.className='tab'+(id.toLowerCase().includes(mode)?' on':'')});
+  document.getElementById('tabEdit').className='tab'+(mode==='edit'?' on':'');
+  document.getElementById('tabView').className='tab'+(mode==='view'?' on':'');
+  document.getElementById('tabReview').className='tab'+(mode==='review'?' on':'');
+  const layout=document.querySelector('.layout');
+  const rev=document.getElementById('reviewPanel');
+  if(mode==='review'){layout.style.display='none'; rev.style.display='block';}
+  else{layout.style.display=''; rev.style.display='none'; document.getElementById('editor').style.display=(mode==='view')?'none':'';}
+}
+document.getElementById('tabEdit').addEventListener('click',()=>setTopTab('edit'));
+document.getElementById('tabView').addEventListener('click',()=>setTopTab('view'));
+document.getElementById('tabReview').addEventListener('click',()=>setTopTab('review'));
+
+document.querySelectorAll('.lb').forEach(b=>b.addEventListener('click',()=>switchLang(b.dataset.lang)));
+document.getElementById('pills').addEventListener('click',e=>{
+  const btn=e.target.closest('.pill'); if(!btn)return;
+  S.tpl=btn.dataset.t; document.querySelectorAll('.pill').forEach(x=>x.classList.toggle('on',x.dataset.t===S.tpl));
+  renderForms(); renderCV();
+});
+document.getElementById('accIn').addEventListener('input',e=>{S.acc=e.target.value;renderCV()});
+document.getElementById('zIn').addEventListener('click',()=>{S.zoom=Math.min(2,(S.fit===false?S.zoom:fitScale())+.1);S.fit=false;renderCV()});
+document.getElementById('zOut').addEventListener('click',()=>{S.zoom=Math.max(.4,(S.fit===false?S.zoom:fitScale())-.1);S.fit=false;renderCV()});
+document.getElementById('zVal').addEventListener('dblclick',()=>{S.fit=true;S.zoom=1;renderCV()});
+addEventListener('resize',()=>{if(S.fit!==false)renderCV()});
+
+(function(){const r=document.getElementById('rsz'),e=document.getElementById('editor'); let drag=false,x0=0,w0=0;
+  r.addEventListener('mousedown',ev=>{drag=true;x0=ev.clientX;w0=e.offsetWidth;r.classList.add('drag');document.body.style.cursor='col-resize';document.body.style.userSelect='none'});
+  document.addEventListener('mousemove',ev=>{if(!drag)return; e.style.width=Math.max(280,Math.min(600,w0+ev.clientX-x0))+'px'; if(S.fit!==false)renderCV()});
+  document.addEventListener('mouseup',()=>{drag=false;r.classList.remove('drag');document.body.style.cursor='';document.body.style.userSelect=''});
+})();
+
+document.getElementById('saveBtn').addEventListener('click',save);
+document.getElementById('restoreBtn').addEventListener('click',restore);
+document.getElementById('resetBtn').addEventListener('click',reset);
+document.getElementById('exportBtn').addEventListener('click',exportJSON);
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('fileIn').click());
+document.getElementById('fileIn').addEventListener('change',e=>{if(e.target.files[0])importJSON(e.target.files[0]);e.target.value=''});
+document.getElementById('sampleBtn').addEventListener('click',loadSample);
+document.getElementById('printBtn').addEventListener('click',()=>{
+  if(S.tpl==='ats'){toast('if','En el diálogo de impresión: Márgenes «Ninguno» y sin «Encabezados y pies de página».'); setTimeout(()=>window.print(),900);}
+  else window.print();
+});
+
+function atsPlainText(){return (document.getElementById('cvpg').innerText||'').replace(/\u00a0/g,' ').split('\n').map(l=>l.trim()).filter((l,i,a)=>!(l===''&&(i===0||a[i-1]===''))).join('\n').trim()}
+function openATS(){
+  const txt=atsPlainText(); document.getElementById('atsTxt').textContent=txt;
+  const low=txt.toLowerCase();
+  const titles=[t('res'),S.tpl==='ats'?t('expP'):t('exp'),t('projs'),t('eduS')];
+  const idx=titles.map(s=>low.indexOf(String(s).toLowerCase()));
+  const orderOK=idx.every((v,i)=>v>=0&&(i===0||v>idx[i-1]));
+  const mailOK=!!S.p.email&&low.includes(S.p.email.toLowerCase());
+  const telOK=!!S.p.tel&&txt.includes(S.p.tel);
+  const st=document.getElementById('atsStatus'); const head=`${txt.length.toLocaleString('es-CO')} caracteres`;
+  const aviso=S.tpl==='ats'?'':'⚠ Estás en otra plantilla (no ATS): este texto incluye iconos y otro orden. Cambia a «ATS» antes de enviar. ';
+  if(orderOK&&mailOK&&telOK&&S.tpl==='ats'){st.className='ats-status ok'; st.innerHTML=`✓ <b>Orden de lectura correcto:</b> Nombre → Resumen → Experiencia → Proyectos → Educación. ${head}.`}
+  else{
+    const faltan=titles.filter((s,i)=>idx[i]<0);
+    st.className='ats-status warn';
+    st.innerHTML=`${aviso}${faltan.length?'Faltan o no se detectan: '+faltan.join(', ')+'. ':''}${!mailOK?'No se detecta el email. ':''}${!telOK?'No se detecta el teléfono. ':''}${head}.`;
+  }
+  document.getElementById('atsModal').classList.add('on');
+}
+document.getElementById('atsBtn').addEventListener('click',openATS);
+document.getElementById('atsClose').addEventListener('click',()=>document.getElementById('atsModal').classList.remove('on'));
+document.getElementById('atsCopy').addEventListener('click',async()=>{const txt=document.getElementById('atsTxt').textContent; try{await navigator.clipboard.writeText(txt);toast('ok','Texto copiado')}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('ok','Texto copiado')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('atsModal').classList.remove('on')});
+
+const STOP=new Set(('para con como por del las los una uno unos unas que este esta estos estas ese esa eso su sus al se le les lo la el en y o u a de es son ser está estan más mas muy sin sobre entre desde hasta cuando donde cual cuales quien quienes todo toda todos todas hay ha han he hemos tu tus mi mis nos te me si no ni ya también tambien pero sino porque aunque mientras cada otro otra otros otras mismo misma así asi solo sólo buscamos buscando requisitos funciones ofrecemos empresa puesto cargo años año laboral deseable valorable imprescindible our your with and for the that this from have will would can could should are was were been being you they them their there here what when which who whom whose not but all any use using used more most other some such only also into over than then them these those ours yours its it is be to of in on at as by or if do does did doing done about across after again against am an because before below between both during each few further how i if in into is it its just me more most my no nor not now of off on once only or other our out over own same she should so some such than that the their them then there these they this those through to too under until up very was we were what when where which while who whom why will with you your').split(/\s+/));
+function compareJD(){
+  const jd=(document.getElementById('atsJD').value||'').toLowerCase();
+  if(!jd.trim()){document.getElementById('atsKw').innerHTML='<span class="kw miss">Pega primero el texto de la oferta</span>';return}
+  const cv=atsPlainText().toLowerCase();
+  const words=(jd.match(/[a-záéíóúüñ0-9+#./]{3,}/g)||[]).map(w=>w.replace(/^[.+#/]+|[.+#/]+$/g,'')).filter(w=>w&&!STOP.has(w)&&!/^\d+$/.test(w));
+  const freq={}; words.forEach(w=>freq[w]=(freq[w]||0)+1);
+  const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,20).map(x=>x[0]);
+  const inCv=w=>cv.includes(w)||cv.includes(w.replace(/s$/,''));
+  const hits=top.filter(inCv), miss=top.filter(w=>!inCv(w));
+  const total=top.length||1; const pct=Math.round(hits.length/total*100);
+  document.getElementById('atsKw').innerHTML=`<span class="kw" style="background:#eef2ff;color:#1e40af">Coincidencia ${pct}% (${hits.length}/${total})</span>`+hits.map(w=>`<span class="kw hit">✓ ${esc(w)}</span>`).join('')+miss.map(w=>`<span class="kw miss">✗ ${esc(w)}</span>`).join('');
+}
+document.getElementById('atsCompare').addEventListener('click',compareJD);
+
+/* ========== REVISOR ATS EXTERNO ========== */
+function analyzeCvText(cvText, jdText){
+  const txt=(cvText||'').replace(/\r\n/g,'\n').trim();
+  const low=txt.toLowerCase();
+  const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
+  const words=(low.match(/[a-záéíóúüñ0-9+#.]{2,}/g)||[]);
+  const hasEmail=/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(txt);
+  const hasPhone=/(\+?\d[\d\s().-]{7,}\d)/.test(txt);
+  const hasLinkedIn=/linkedin\.com\/in\//i.test(txt);
+  const hasURL=/https?:\/\/|github\.com\/|portfolio|\.dev\b|\.com\b/i.test(txt);
+  const bullets=lines.filter(l=>/^[-*•▪●◦–—]\s+/.test(l)).length;
+  const dateHits=(txt.match(/\b(19|20)\d{2}\b|\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*(19|20)\d{2}\b/ig)||[]).length;
+  const sections=[
+    {k:'Contacto', ok:hasEmail||hasPhone},
+    {k:'Resumen / Perfil', ok:/\b(resumen|perfil|summary|profile|about|objetivo|objective)\b/i.test(txt)},
+    {k:'Experiencia', ok:/\b(experiencia|experience|employment|work history|trayectoria|laboral)\b/i.test(txt)},
+    {k:'Educación', ok:/\b(educaci[oó]n|education|formaci[oó]n|academic|universidad|degree)\b/i.test(txt)},
+    {k:'Habilidades', ok:/\b(habilidades|skills|competencias|tecnolog[ií]as|technologies|tools)\b/i.test(txt)},
+  ];
+  const foundSecs=sections.filter(s=>s.ok);
+  const missingSecs=sections.filter(s=>!s.ok);
+
+  const issues=[];
+  const add=(sev,title,why,fix,action=null)=>issues.push({sev,title,why,fix,action});
+  if(!hasEmail) add('high','Falta email','Los ATS y reclutadores necesitan un contacto directo; sin email tu CV puede descartarse.','Añade un email profesional en el encabezado (ej. nombre.apellido@dominio.com).',{type:'insertTop',label:'Insertar plantilla contacto',text:'Nombre Apellido\nemail@ejemplo.com | +57 300 000 0000 | Ciudad, País\nlinkedin.com/in/tu-perfil | portfolio.com\n\n'});
+  if(!hasPhone) add('med','Falta teléfono','Facilita el contacto rápido; muchos ATS extraen teléfono como campo obligatorio.','Añade teléfono con código de país (ej. +57 300 000 0000).',{type:'copy',label:'Copiar formato',text:'+57 300 000 0000'});
+  if(missingSecs.find(s=>s.k==='Resumen / Perfil')) add('med','Falta resumen/perfil','El resumen ayuda al reclutador y al ATS a entender tu rol objetivo en segundos.','Añade 2-4 líneas con rol, años, stack clave y un logro medible.',{type:'insertAfterTop',label:'Insertar plantilla resumen',text:'\nRESUMEN PROFESIONAL\nProfesional con X años de experiencia en [rol]. Especialista en [tecnologías clave]. Logro destacado: [métrica].\n'});
+  if(missingSecs.find(s=>s.k==='Experiencia')) add('high','Falta sección de experiencia','La experiencia es la sección más evaluada por ATS y reclutadores.','Añade una sección "EXPERIENCIA" con cargo, empresa, fechas y logros en viñetas.',{type:'append',label:'Insertar plantilla experiencia',text:'\nEXPERIENCIA\nCargo — Empresa | Mes Año – Mes Año\n- Logro cuantificable con verbo de acción.\n- Responsabilidad/resultado clave.\n'});
+  if(missingSecs.find(s=>s.k==='Educación')) add('med','Falta sección de educación','Muchos filtros ATS validan formación mínima.','Añade "EDUCACIÓN" con título, institución y año.',{type:'append',label:'Insertar plantilla educación',text:'\nEDUCACIÓN\nTítulo / Grado — Institución | Año\n'});
+  if(missingSecs.find(s=>s.k==='Habilidades')) add('med','Falta sección de habilidades','Las skills son claves para el match ATS por palabras clave.','Añade "HABILIDADES" con herramientas/tecnologías relevantes a la oferta.',{type:'append',label:'Insertar plantilla habilidades',text:'\nHABILIDADES\nSkill 1, Skill 2, Skill 3, Skill 4\n'});
+  if(bullets<3) add('med','Pocas viñetas','Los ATS y reclutadores escanean bullets; párrafos largos se saltan.','Convierte responsabilidades/logros en viñetas que empiecen con verbo + métrica.',{type:'copy',label:'Copiar ejemplo de bullets',text:'- Lideré [proyecto] usando [tecnología], logrando [métrica].\n- Optimicé [proceso] reduciendo [tiempo/costo] en [X]%.\n- Implementé [solución] para [impacto medible].'});
+  if(dateHits<2) add('med','Pocas fechas detectadas','Sin fechas claras, el ATS puede no construir tu cronología correctamente.','Incluye formato consistente: "Ene 2022 – Actualidad" o "2022 – 2024".',{type:'copy',label:'Copiar formato fechas',text:'Ene 2022 – Actualidad'});
+  if(txt.length<400) add('high','CV muy corto / texto mal extraído','Si el texto es muy corto, el ATS puede estar leyendo mal tu PDF (columnas, imágenes, tablas).','Exporta a PDF texto (no imagen), evita columnas, o pega el texto extraído para revisar.',{type:'copy',label:'Copiar checklist extracción',text:'Checklist: PDF con texto seleccionable, sin columnas/tablas, sin iconos como texto esencial, encabezado en el cuerpo (no header de Word), fuentes estándar.'});
+  if(txt.length>12000) add('low','CV muy largo','CVs largos diluyen palabras clave y cansan al reclutador.','Reduce a 1-2 páginas priorizando experiencia relevante y logros medibles.',null);
+  if(/\t{2,}| {4,}\S+ {4,}/.test(txt)) add('high','Posible maquetación en columnas/tablas','Las columnas/tablas suelen leerse en orden incorrecto por ATS.','Usa una sola columna, sin tablas para layout. Verifica pegando en Bloc de Notas.',{type:'copy',label:'Copiar consejo',text:'Convierte el CV a una sola columna, sin tablas, sin cajas de texto. Guarda como PDF desde Word/Google Docs con texto seleccionable.'});
+  if(/[^\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/.test(txt)) add('low','Caracteres/iconos inusuales','Algunos ATS no interpretan iconos/emojis y pueden perder información.','Reemplaza iconos por texto: "Email:", "Tel:", "LinkedIn:".',null);
+  if(!/\b(logr|aument|reduj|implement|desarroll|lider|cre[eé]|optimi|mejor|achiev|increas|reduc|implement|develop|led|creat|optimi|improv)/i.test(txt)) add('med','Pocos verbos de logro','Sin verbos de acción, el impacto se ve débil para reclutadores y búsquedas ATS.','Empieza bullets con: Lideré, Implementé, Optimicé, Reduje, Aumenté, Desarrollé.',{type:'copy',label:'Copiar verbos',text:'Lideré, Diseñé, Implementé, Optimicé, Reduje, Aumenté, Desarrollé, Automaticé, Integré, Entregué'});
+
+  let keyword=null;
+  const jd=(jdText||'').trim();
+  if(jd){
+    const jdWords=(jd.toLowerCase().match(/[a-záéíóúüñ0-9+#.]{3,}/g)||[]).map(w=>w.replace(/^[.+#/]+|[.+#/]+$/g,'')).filter(w=>w&&!STOP.has(w)&&!/^\d+$/.test(w));
+    const freq={}; jdWords.forEach(w=>freq[w]=(freq[w]||0)+1);
+    const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,25).map(x=>x[0]);
+    const inCv=w=>low.includes(w)||low.includes(w.replace(/s$/,''));
+    const hits=top.filter(inCv), miss=top.filter(w=>!inCv(w));
+    const total=top.length||1; const pct=Math.round(hits.length/total*100);
+    keyword={pct,hits,miss,total};
+    if(miss.length) add('med',`Faltan ${miss.length} palabras clave de la oferta`,'El ATS rankea por coincidencia de keywords; faltantes bajan tu puntaje.','Incorpora las keywords relevantes de forma natural en Resumen, Habilidades y logros (sin inventar experiencia).',{type:'copy',label:'Copiar keywords faltantes',text:miss.join(', ')});
+  }
+
+  let score=0;
+  score += Math.min(20, foundSecs.length*4);
+  score += hasEmail?10:0; score += hasPhone?8:0; score += hasLinkedIn?4:0;
+  score += Math.min(12, bullets*2); score += Math.min(10, dateHits*2);
+  score += (txt.length>=400&&txt.length<=12000)?10:(txt.length>=250?5:0);
+  score += Math.min(10, Math.max(0, 10 - issues.filter(i=>i.sev!=='low').length*2));
+  if(keyword) score = Math.round(score*0.65 + keyword.pct*0.35);
+  score=Math.max(0,Math.min(100,score));
+
+  return {score,words:words.length,chars:txt.length,lines:lines.length,hasEmail,hasPhone,hasLinkedIn,hasURL,bullets,dateHits,foundSecs,missingSecs,issues,keyword,txt};
+}
+
+function applyReviewAction(act){
+  const ta=document.getElementById('revCv'); if(!ta||!act) return;
+  const v=ta.value;
+  if(act.type==='insertTop'){ta.value=act.text + v.replace(/^\s+/,''); toast('ok','Plantilla insertada al inicio');}
+  else if(act.type==='insertAfterTop'){ta.value=v + (v.endsWith('\n')?'':'\n') + act.text; toast('ok','Plantilla añadida');}
+  else if(act.type==='append'){ta.value=v + (v.endsWith('\n')?'':'\n') + act.text; toast('ok','Plantilla añadida al final');}
+  else if(act.type==='copy'){navigator.clipboard?.writeText(act.text).then(()=>toast('ok','Copiado')).catch(()=>{const x=document.createElement('textarea');x.value=act.text;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();toast('ok','Copiado');});}
+  if(act.type!=='copy'){renderReview(analyzeCvText(ta.value, document.getElementById('revJd').value));}
+}
+window._revActions=[];
+function runReviewAction(i){const a=window._revActions[i]; if(a) applyReviewAction(a);}
+
+function renderReview(out){
+  const r=out; const el=document.getElementById('revOut');
+  const color=r.score>=75?'#059669':r.score>=50?'#d97706':'#dc2626';
+  const label=r.score>=75?'Buen pase ATS':r.score>=50?'Pase parcial / mejorable':'Riesgo alto en ATS';
+  window._revActions=r.issues.map(i=>i.action).filter(Boolean);
+  const sevC={high:'#dc2626',med:'#d97706',low:'#2563eb'}; const sevB={high:'#fef2f2',med:'#fffbeb',low:'#eff6ff'}; const sevL={high:'Alta',med:'Media',low:'Baja'};
+  const issuesHtml=r.issues.length?r.issues.map((it,idx)=>{
+    const ai=r.issues.slice(0,idx+1).filter(x=>x.action).length-1;
+    const btn=it.action?`<button class="btn sm ${it.action.type==='copy'?'':'pri'}" onclick="runReviewAction(${ai})">${esc(it.action.label)}</button>`:'<span style="font-size:.72rem;color:var(--tx3)">Ajuste manual</span>';
+    return `<div style="border:1px solid ${sevC[it.sev]}33;background:${sevB[it.sev]};border-radius:10px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b style="color:#0f172a;font-size:.86rem">${esc(it.title)}</b><span style="font-size:.68rem;font-weight:700;color:${sevC[it.sev]};white-space:nowrap">${sevL[it.sev]}</span></div>
+      <div style="font-size:.78rem;color:#475569;margin-top:4px"><b>Por qué:</b> ${esc(it.why)}</div>
+      <div style="font-size:.78rem;color:#0f172a;margin-top:4px"><b>Cómo arreglarlo:</b> ${esc(it.fix)}</div>
+      <div style="margin-top:8px">${btn}</div>
+    </div>`;
+  }).join(''):'<div style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;padding:10px;border-radius:8px">Sin problemas críticos detectados. Revisa coincidencia de keywords si pegaste una oferta.</div>';
+
+  const kw=r.keyword?`
+    <div style="margin-top:14px"><b>Coincidencia con la oferta: ${r.keyword.pct}% (${r.keyword.hits.length}/${r.keyword.total})</b>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${r.keyword.hits.map(w=>`<span class="kw hit">✓ ${esc(w)}</span>`).join('')}${r.keyword.miss.map(w=>`<span class="kw miss">✗ ${esc(w)}</span>`).join('')}</div>
+      ${r.keyword.miss.length?`<div style="margin-top:8px"><button class="btn sm" onclick="navigator.clipboard.writeText(${JSON.stringify(r.keyword.miss.join(', '))}).then(()=>toast('ok','Keywords copiadas'))">Copiar faltantes</button></div>`:''}
+    </div>`:'<div style="margin-top:14px;color:var(--tx3)">Pega una oferta para ver coincidencia de palabras clave.</div>';
+
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+      <div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font:700 1.2rem var(--fh);color:${color};background:${color}14;border:3px solid ${color}">${r.score}</div>
+      <div><div style="font:700 1rem var(--fh);color:${color}">${label}</div><div style="font-size:.78rem;color:var(--tx3)">${r.chars.toLocaleString('es-CO')} caracteres · ${r.words.toLocaleString('es-CO')} palabras · ${r.lines} líneas</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+      ${[['Email',r.hasEmail],['Teléfono',r.hasPhone],['LinkedIn',r.hasLinkedIn],['URL/Portfolio',r.hasURL],['Viñetas',r.bullets>0?r.bullets:false],['Fechas',r.dateHits>0?r.dateHits:false]].map(([k,v])=>`<div style="padding:8px;border:1px solid var(--bd);border-radius:8px;background:${v?'#ecfdf5':'#fef2f2'}"><div style="font-size:.72rem;color:var(--tx3)">${k}</div><div style="font-weight:600;color:${v?'#047857':'#b91c1c'}">${v===true?'Detectado':v===false?'No detectado':v}</div></div>`).join('')}
+    </div>
+    <div style="margin-bottom:12px"><b>Secciones detectadas</b><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${r.foundSecs.map(s=>`<span class="kw hit">✓ ${s.k}</span>`).join('')||'<span class="kw miss">Ninguna clara</span>'}${r.missingSecs.map(s=>`<span class="kw miss">Falta ${s.k}</span>`).join('')}</div></div>
+    <div style="margin-bottom:8px"><b>Problemas detectados y cómo arreglarlos</b></div>
+    ${issuesHtml}
+    ${kw}
+    <div style="margin-top:14px;padding:10px;background:#f8fafc;border:1px solid var(--bd);border-radius:8px;font-size:.76rem;color:var(--tx3)">Análisis heurístico local. Un ATS real también puede fallar por columnas, tablas, imágenes, encabezados/pies o PDFs mal parseados. La prueba más fiel: pega el texto extraído del PDF.</div>`;
+}
+
+document.getElementById('revRun').addEventListener('click',()=>{
+  const cv=document.getElementById('revCv').value;
+  if(!cv.trim()){toast('er','Pega primero el texto del CV'); return;}
+  renderReview(analyzeCvText(cv, document.getElementById('revJd').value));
+});
+document.getElementById('revClear').addEventListener('click',()=>{document.getElementById('revCv').value=''; document.getElementById('revJd').value=''; window._revActions=[]; document.getElementById('revOut').innerHTML='<div style="color:var(--tx3)">Pega un CV y pulsa <b>Analizar ATS</b>. El análisis se hace localmente en tu navegador.</div>';});
+document.getElementById('revFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>{document.getElementById('revCv').value=String(ev.target.result||''); toast('ok','Archivo cargado');}; r.readAsText(f); e.target.value='';
+});
+
+function loadSample(){
+  if(S.lang==='es'){
+    S.p={nombre:'Miguel E. Rodriguez Martinez',titulo:'Senior React & Full-Stack Developer',email:'miguelxlerion@gmail.com',tel:'+57 313 226 3265',ubi:'Bogotá, Colombia',lin:'linkedin.com/in/miguelxlerion',port:'',web:'github.com/miguelxlerion',res:'Creative Technologist con experiencia en desarrollo front-end, diseño 3D y visualización de datos.'};
+    S.exp=[{puesto:'Desarrollador Full-Stack Senior — Plataforma IoT',emp:'Alcaldía de Caucasia (FOVIS)',ini:'Abr. 2024',fin:'Oct. 2025',desc:'Desarrollo de plataforma IoT multi-tenant.',ach:'Lideré equipo de 4 personas\n99% uptime'},{puesto:'Desarrollador Web & Integración 3D',emp:'2INK',ini:'2022',fin:'2023',desc:'Experiencias web con Three.js/WebGL.',ach:'Componentes React pixel-perfect'}];
+    S.edu=[{grad:'Ingeniería de Sistemas',inst:'Universidad Tecnológica',anio:'2020'}];
+    S.skills=['React','Next.js','TypeScript','Three.js','Docker']; S.langs=[{lang:'Español',lvl:'Nativo'},{lang:'Inglés',lvl:'Avanzado'}]; S.certs=[]; S.pubs=[]; S.projs=[]; S.specs=[];
+  }else{
+    S.p={nombre:'Miguel E. Rodriguez Martinez',titulo:'Senior React & Full-Stack Developer',email:'miguelxlerion@gmail.com',tel:'+57 313 226 3265',ubi:'Bogotá, Colombia',lin:'linkedin.com/in/miguelxlerion',port:'',web:'github.com/miguelxlerion',res:'Creative Technologist with experience in front-end development, 3D design and data visualization.'};
+    S.exp=[{puesto:'Senior Full-Stack Developer — IoT Platform',emp:'Caucasia Town Council (FOVIS)',ini:'Apr. 2024',fin:'Oct. 2025',desc:'Multi-tenant IoT platform.',ach:'Led 4-person team\n99% uptime'}];
+    S.edu=[{grad:'Systems Engineering',inst:'Technological University',anio:'2020'}];
+    S.skills=['React','Next.js','TypeScript','Three.js','Docker']; S.langs=[{lang:'Spanish',lvl:'Native'},{lang:'English',lvl:'Advanced'}]; S.certs=[]; S.pubs=[]; S.projs=[]; S.specs=[];
+  }
+  renderAll(); toast('ok',t('sample'));
+}
+
+async function loadInitialState(){
+  const q=new URLSearchParams(location.search); const qTpl=q.get('tpl'), qLang=q.get('lang');
+  const finish=()=>{
+    if(['ats','dis','web','tresd','prog','ta'].includes(qTpl))S.tpl=qTpl;
+    if((qLang==='en'||qLang==='es')&&qLang!==S.lang){snapshot(); if(docEmpty(S.docs[qLang]))S.docs[qLang]=emptyDoc(); applyDoc(S.docs[qLang]); S.lang=qLang;}
+    if(!S.acc)S.acc='#6366f1'; if(!S.zoom)S.zoom=1; renderAll();
+  };
+  let saved=null,seed=null; const ls=localStorage.getItem('cvstudio');
+  if(ls){try{const d=JSON.parse(ls);if(d&&d.version===2)saved=d}catch(e){}}
+  try{const resp=await fetch('cvstudio-state.json',{cache:'no-store'}); if(resp.ok)seed=await resp.json();}catch(e){}
+  if(seed&&(!saved||(seed.rev||0)>(saved.rev||0))){loadState(seed);finish();toast('ok','Sesión cargada desde cvstudio-state.json');return;}
+  if(saved){loadState(saved);finish();toast('if','Sesión restaurada');return}
+  if(seed){loadState(seed);finish();toast('ok','Sesión cargada desde cvstudio-state.json');return;}
+  loadSample();
+}
+loadInitialState();
+</script>
+</body>
+</html>
