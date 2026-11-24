@@ -269,7 +269,7 @@ html,body{height:auto!important;overflow:visible!important;background:#fff}*{-we
   <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
     <div style="display:flex;flex-direction:column;gap:12px">
       <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap"><b id="revTitleEl" style="font-family:var(--fh)">CV a revisar</b><label class="btn sm" style="cursor:pointer"><span id="revLoadEl">📄 Cargar CV</span><input type="file" id="revFile" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none"></label></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap"><b id="revTitleEl" style="font-family:var(--fh)">CV a revisar</b><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm pri" id="revUseMine">Usar mi CV</button><label class="btn sm" style="cursor:pointer"><span id="revLoadEl">📄 Cargar CV</span><input type="file" id="revFile" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none"></label></div></div>
         <div id="revFileStatus" style="display:none;font-size:.75rem;color:var(--tx3);margin-bottom:8px"></div>
         <div id="revCvWrap" style="display:grid;grid-template-columns:44px 1fr;border:1px solid var(--bd);border-radius:var(--r1);overflow:hidden;background:#fff">
           <div id="revGutter" aria-hidden="true" style="padding:10px 6px 10px 0;text-align:right;font:13px/1.5 var(--fm);color:#94a3b8;background:#f8fafc;border-right:1px solid #e2e8f0;user-select:none;overflow:hidden;white-space:pre;line-height:1.5">1</div>
@@ -282,6 +282,7 @@ html,body{height:auto!important;overflow:visible!important;background:#fff}*{-we
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
           <button class="btn pri" id="revRun">Analizar ATS</button>
           <button class="btn" id="revClear">Limpiar</button>
+          <button class="btn" id="revToEditor">Enviar al editor</button>
         </div>
       </div>
     </div>
@@ -344,8 +345,8 @@ spc:'Nombre del área',spcD:'Detalle / tecnologías',addSpc:'+ Añadir especiali
 meter:'Perfil completado',del:'Eliminar',sample:'Ejemplo cargado',saved:'Datos guardados',restored:'Sesión restaurada',reset:'Formulario borrado',imported:'Sesión importada',exported:'Exportando...',
 ph:'Ej. Diseñadora Senior',ph2:'Nombre de la empresa',ph3:'Ene 2022',ph4:'Actualidad',
 exp:'Experiencia',expP:'Experiencia profesional',eduS:'Educación',skills:'Habilidades',langs:'Idiomas',certS:'Certificaciones',pubs:'Publicaciones',projs:'Proyectos',
-revTitle:'CV a revisar',revLoad:'📄 Cargar CV',revPaste:'Pega aquí el texto del CV (copiado desde PDF/Word/LinkedIn). Para mejor resultado, usa texto plano o sube tu PDF/DOCX.',
-revJdTitle:'Oferta / palabras clave (opcional)',revJdPh:'Pega la descripción de la oferta para comparar palabras clave…',revRun:'Analizar ATS',revClear:'Limpiar',revResult:'Resultado del análisis',
+revTitle:'CV a revisar',revLoad:'📄 Cargar CV',revUseMine:'Usar mi CV del editor',revPaste:'Pega aquí el texto del CV (copiado desde PDF/Word/LinkedIn). Para mejor resultado, usa texto plano o sube tu PDF/DOCX.',
+revJdTitle:'Oferta / palabras clave (opcional)',revJdPh:'Pega la descripción de la oferta para comparar palabras clave…',revRun:'Analizar ATS',revClear:'Limpiar',revToEditor:'Enviar al editor',revResult:'Resultado del análisis',
 revEmpty:'Pega un CV y pulsa <b>Analizar ATS</b>. El análisis se hace localmente en tu navegador.',revNoIssues:'Sin problemas críticos detectados. Revisa coincidencia de keywords si pegaste una oferta.',
 revGood:'Buen pase ATS',revOk:'Pase parcial / mejorable',revBad:'Riesgo alto en ATS',revChars:'caracteres',revWords:'palabras',revLines:'líneas',
 revDetected:'Detectado',revNotDetected:'No detectado',revSecsFound:'Secciones detectadas',revNoSec:'Ninguna clara',revMissing:'Falta',revProblems:'Problemas detectados y cómo arreglarlos',
@@ -366,8 +367,8 @@ spc:'Focus area name',spcD:'Detail / technologies',addSpc:'+ Add specialization'
 meter:'Profile completed',del:'Delete',sample:'Sample loaded',saved:'Data saved',restored:'Session restored',reset:'Form cleared',imported:'Session imported',exported:'Exporting...',
 ph:'e.g. Senior Designer',ph2:'Company name',ph3:'Jan 2022',ph4:'Present',
 exp:'Experience',expP:'Professional Experience',eduS:'Education',skills:'Skills',langs:'Languages',certS:'Certifications',pubs:'Publications',projs:'Projects',
-revTitle:'CV to review',revLoad:'📄 Upload CV',revPaste:'Paste the CV text here (copied from PDF/Word/LinkedIn). For best results, use plain text or upload your PDF/DOCX.',
-revJdTitle:'Job posting / keywords (optional)',revJdPh:'Paste the job description to compare keywords…',revRun:'Analyze ATS',revClear:'Clear',revResult:'Analysis result',
+revTitle:'CV to review',revLoad:'📄 Upload CV',revUseMine:'Use my CV from editor',revPaste:'Paste the CV text here (copied from PDF/Word/LinkedIn). For best results, use plain text or upload your PDF/DOCX.',
+revJdTitle:'Job posting / keywords (optional)',revJdPh:'Paste the job description to compare keywords…',revRun:'Analyze ATS',revClear:'Clear',revToEditor:'Send to editor',revResult:'Analysis result',
 revEmpty:'Paste a CV and click <b>Analyze ATS</b>. Analysis runs locally in your browser.',revNoIssues:'No critical issues detected. Check keyword match if you pasted a job posting.',
 revGood:'Good ATS pass',revOk:'Partial / improvable pass',revBad:'High ATS risk',revChars:'characters',revWords:'words',revLines:'lines',
 revDetected:'Detected',revNotDetected:'Not detected',revSecsFound:'Detected sections',revNoSec:'None clear',revMissing:'Missing',revProblems:'Issues detected and how to fix them',
@@ -700,7 +701,15 @@ document.getElementById('printBtn').addEventListener('click',()=>{
   else window.print();
 });
 
-function atsPlainText(){return (document.getElementById('cvpg').innerText||'').replace(/\u00a0/g,' ').split('\n').map(l=>l.trim()).filter((l,i,a)=>!(l===''&&(i===0||a[i-1]===''))).join('\n').trim()}
+function atsPlainText(){
+  const root=document.getElementById('cvpg'); if(!root) return '';
+  const clone=root.cloneNode(true);
+  clone.querySelectorAll('br').forEach(br=>br.replaceWith('\n'));
+  clone.querySelectorAll('li').forEach(li=>{li.prepend(document.createTextNode('- ')); li.append(document.createTextNode('\n'));});
+  clone.querySelectorAll('h1,h2,h3,h4,section,.ent,.cert-row,.ta-spec,.grp,.sk-ats>div').forEach(el=>{el.prepend(document.createTextNode('\n')); el.append(document.createTextNode('\n'));});
+  clone.querySelectorAll('a').forEach(a=>{const href=a.getAttribute('href')||''; const t=a.textContent||''; if(href && !t.includes(href.replace(/^https?:\/\//,''))) a.textContent=t;});
+  return (clone.innerText||'').replace(/\u00a0/g,' ').replace(/\r\n/g,'\n').split('\n').map(l=>l.replace(/[ \t]+$/,'')).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+}
 function openATS(){
   const txt=atsPlainText(); document.getElementById('atsTxt').textContent=txt;
   const low=txt.toLowerCase();
@@ -836,7 +845,8 @@ function analyzeCvText(cvText, jdText){
   const hasURL=/https?:\/\/|github\.com\/|portfolio|\.dev\b|\.com\b/i.test(txt);
   const bulletRe=/^[-*•▪●◦–—]\s+/;
   const bulletLines=[]; {let pos=0; txt.split('\n').forEach((ln,i)=>{if(bulletRe.test(ln.trim())) bulletLines.push({line:i+1,text:ln.trim(),index:off(pos)}); pos+=ln.length+1;});}
-  const bullets=bulletLines.length;
+  let bullets=bulletLines.length;
+  if(bullets<3){ let pos=0; txt.split('\n').forEach((ln,i)=>{ const t=ln.trim(); if(!bulletRe.test(t) && /^(Lider|Desarroll|Implement|Optimi|Cre[eé]|Diseñ|Gestion|Coordin|Aument|Reduj|Mejor|Logr|Constru|Automat|Integr|Entreg|Led|Develop|Implement|Optimi|Creat|Design|Manag|Coordin|Increas|Reduc|Improv|Achiev|Built|Automat|Integr|Deliver)/i.test(t) && t.length>20 && t.length<180){ bullets++; if(bulletLines.length<8) bulletLines.push({line:i+1,text:t,index:off(pos),implicit:true}); } pos+=ln.length+1; }); }
   const dateRe=/\b(19|20)\d{2}\b|\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*(19|20)\d{2}\b/ig;
   const dateMatches=[]; let dm; while((dm=dateRe.exec(txt))){dateMatches.push({text:dm[0],index:off(dm.index),length:dm[0].length,line:revLineAt(txt,dm.index)}); if(dateMatches.length>20) break;}
   const dateHits=dateMatches.length;
@@ -980,8 +990,8 @@ function runReviewAnalysis(){
 }
 function renderReviewPanel(){
   const set=(id,val,html)=>{const el=document.getElementById(id); if(!el) return; if(html) el.innerHTML=val; else el.textContent=val;};
-  set('revTitleEl',t('revTitle')); set('revLoadEl',t('revLoad')); set('revJdTitleEl',t('revJdTitle')); set('revResultEl',t('revResult'));
-  set('revRun',t('revRun')); set('revClear',t('revClear'));
+  set('revTitleEl',t('revTitle')); set('revLoadEl',t('revLoad')); set('revUseMine',t('revUseMine')); set('revJdTitleEl',t('revJdTitle')); set('revResultEl',t('revResult'));
+  set('revRun',t('revRun')); set('revClear',t('revClear')); set('revToEditor',t('revToEditor'));
   const cv=document.getElementById('revCv'); if(cv) cv.placeholder=t('revPaste');
   const jd=document.getElementById('revJd'); if(jd) jd.placeholder=t('revJdPh');
   if(window._lastRev){ renderReview(analyzeCvText(window._lastRev.cv, window._lastRev.jd)); }
@@ -989,6 +999,106 @@ function renderReviewPanel(){
   syncRevGutter();
 }
 
+function parseCvTextToState(text){
+  const raw=(text||'').replace(/\r\n/g,'\n').trim();
+  const lines=raw.split('\n').map(l=>l.replace(/\s+$/,''));
+  const low=raw.toLowerCase();
+  const secDefs=[
+    {k:'sum',re:/^(resumen profesional|resumen|perfil profesional|perfil|summary|professional summary|profile|about|objetivo)$/i},
+    {k:'exp',re:/^(experiencia profesional|experiencia laboral|experiencia|experience|work experience|employment|trayectoria)$/i},
+    {k:'edu',re:/^(educaci[oó]n|education|formaci[oó]n acad[eé]mica|academic)$/i},
+    {k:'skills',re:/^(habilidades|skills|competencias|tecnolog[ií]as|technologies|tools)$/i},
+    {k:'langs',re:/^(idiomas|languages)$/i},
+    {k:'certs',re:/^(certificaciones|certifications|certificados|licenses|licencias)$/i},
+    {k:'projs',re:/^(proyectos|projects)$/i},
+    {k:'pubs',re:/^(publicaciones|publications)$/i},
+  ];
+  const isHeading=(l)=>secDefs.find(s=>s.re.test(l.trim()));
+  const sections={}; let cur='head'; sections[cur]=[];
+  for(const l of lines){ const h=isHeading(l); if(h){cur=h.k; sections[cur]=[];} else { (sections[cur]=sections[cur]||[]).push(l); } }
+  const cleanBlock=arr=>(arr||[]).join('\n').trim();
+  const cleanLines=arr=>(arr||[]).map(l=>l.trim()).filter(Boolean);
+
+  const email=(raw.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)||[''])[0];
+  const phone=(raw.match(/(\+?\d[\d\s().-]{7,}\d)/)||[''])[0].trim();
+  const linM=raw.match(/(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+\/?/i);
+  const webM=raw.match(/(?:https?:\/\/)?(?:github\.com\/[A-Za-z0-9_.-]+\/?[A-Za-z0-9_.-]*|[A-Za-z0-9.-]+\.(?:dev|io|com|app|me|co)(?:\/[^\s|]*)?)/i);
+  const linkedin=linM?linM[0].replace(/^https?:\/\//i,''):'';
+  let web=webM?webM[0].replace(/^https?:\/\//i,''):'';
+  if(web && linkedin && web.includes('linkedin.com')) web='';
+  if(web && email && (web.includes(email) || email.toLowerCase().includes(web.toLowerCase()))) web='';
+  if(web && /^(gmail|hotmail|outlook|yahoo|icloud)\./i.test(web)) web='';
+
+  const head=cleanLines(sections.head);
+  const contactRe=/@|linkedin|github|http|www\.|\+?\d[\d\s().-]{7,}\d|\||\b(Calle|Cra|Bogotá|Medellín|Colombia|City|Remote)\b/i;
+  let nombre='', titulo='', ubi='';
+  for(const l of head){
+    if(!nombre && !contactRe.test(l) && l.length<80){ nombre=l; continue; }
+    if(nombre && !titulo && !contactRe.test(l) && l.length<100){ titulo=l; continue; }
+    if(!ubi && /\b([A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ]+(?:\s+[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ]+)*,\s*[A-ZÁÉÍÓÚÜÑ])/ .test(l) && !/@/.test(l)) ubi=l;
+  }
+  if(!ubi){ const u=head.find(l=>/,/.test(l) && !/@|linkedin|github|http/.test(l) && l.length<60); if(u) ubi=u.replace(/.*\|\s*/,'').trim(); }
+
+  const p={nombre:nombre||S.p.nombre||'',titulo:titulo||'',email:email||'',tel:phone||'',ubi:ubi||'',lin:linkedin||'',port:'',web:web||'',res:cleanBlock(sections.sum)};
+
+  const parseEntries=(arr)=>{
+    const ls=cleanLines(arr); const entries=[]; let cur=null;
+    const dateRe=/((?:ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{4}|\d{4})\s*[–\-—]\s*((?:ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|present|actualidad|current)[a-z]*\.?\s*\d{0,4})/i;
+    for(const l of ls){
+      const dm=l.match(dateRe);
+      const isRole=!dm && !/^[-*•]/.test(l) && l.length<120 && !/^https?:/.test(l);
+      if(dm){
+        if(!cur) cur={puesto:'',emp:'',ini:'',fin:'',desc:'',ach:''};
+        // try to split "Cargo — Empresa | date – date" or "Empresa | date – date"
+        const left=l.replace(dm[0],'').replace(/[|]/g,' ').replace(/\s{2,}/g,' ').trim().replace(/[–\-—]\s*$/,'').trim();
+        if(left){ const parts=left.split(/\s+[–—-]\s+|\s+at\s+|\s+en\s+/i); if(!cur.puesto){cur.puesto=parts[0]||left; cur.emp=parts.slice(1).join(' - ');} else if(!cur.emp) cur.emp=left; }
+        cur.ini=dm[1].trim(); cur.fin=dm[2].trim();
+        if(cur.puesto||cur.emp) { entries.push(cur); cur=entries[entries.length-1]; cur._done=true; }
+        continue;
+      }
+      if(/^[-*•]\s+/.test(l)){ const target=(cur&&cur._done)?cur:(cur||null); if(target){ target.ach+=(target.ach?'\n':'')+l.replace(/^[-*•]\s+/,''); } else { cur={puesto:'',emp:'',ini:'',fin:'',desc:'',ach:l.replace(/^[-*•]\s+/,'')}; } continue; }
+      if(cur&&cur._done){
+        const looksDesc=/[.]$/.test(l) || l.length>90 || /^[a-záéíóúüñ]/.test(l);
+        if(isRole && !looksDesc && l.length<120){ cur={puesto:l,emp:'',ini:'',fin:'',desc:'',ach:''}; }
+        else { cur.desc+=(cur.desc?'\n':'')+l; }
+        continue;
+      }
+      if(!cur) cur={puesto:'',emp:'',ini:'',fin:'',desc:'',ach:''};
+      if(!cur.puesto) cur.puesto=l;
+      else if(!cur.emp && isRole) cur.emp=l;
+      else cur.desc+=(cur.desc?'\n':'')+l;
+    }
+    if(cur && !cur._done && (cur.puesto||cur.emp||cur.desc||cur.ach)) entries.push(cur);
+    return entries.filter(e=>e.puesto||e.emp).map(e=>{const {_done,...r}=e; return r;});
+  };
+
+  const exp=parseEntries(sections.exp).map(e=>({puesto:e.puesto,emp:e.emp,ini:e.ini,fin:e.fin,desc:e.desc,ach:e.ach}));
+  const eduRaw=parseEntries(sections.edu);
+  const edu=eduRaw.map(e=>{let inst=e.emp||''; let anio=e.fin||e.ini||''; const ym=(inst+' '+e.puesto).match(/\b(19|20)\d{2}\b/); if(!anio&&ym) anio=ym[0]; inst=inst.replace(/\|?\s*\b(19|20)\d{2}\b\s*/g,' ').replace(/\s{2,}/g,' ').trim().replace(/[|–-]\s*$/,'').trim(); return {grad:e.puesto||e.desc||'',inst,anio};}).filter(e=>e.grad||e.inst);
+
+  const skillLines=cleanLines(sections.skills);
+  const skills=[]; for(const l of skillLines){ const parts=l.replace(/^[-*•]\s+/,'').split(/[,|·•]/).map(s=>s.trim()).filter(Boolean); for(const p of parts){ if(p.length<60 && !skills.includes(p)) skills.push(p); } }
+
+  const langs=cleanLines(sections.langs).map(l=>{const m=l.replace(/^[-*•]\s+/,'').split(/\s+[–—-]\s+|\s*:\s*|\s*\|\s*/); return {lang:m[0]?.trim()||l,lvl:m[1]?.trim()||''};}).filter(x=>x.lang);
+  const certs=cleanLines(sections.certs).map(l=>{const m=l.replace(/^[-*•]\s+/,''); const parts=m.split(/\s+[–—|]\s+/); return {cert:parts[0]?.trim()||m,emisor:parts[1]?.trim()||'',anio:(m.match(/\b(19|20)\d{2}\b/)||[''])[0]};}).filter(x=>x.cert);
+  const projs=cleanLines(sections.projs).map(l=>({proj:l.replace(/^[-*•]\s+/,''),desc:''})).filter(x=>x.proj);
+
+  return {p,exp,edu,skills,langs,certs,projs,pubs:S.pubs||[],specs:S.specs||[]};
+}
+
+document.getElementById('revToEditor').addEventListener('click',()=>{
+  const txt=document.getElementById('revCv').value;
+  if(!txt.trim()){toast('er',t('revPasteFirst')); return;}
+  const msg=S.lang==='en'?'This will replace your current editor content with the parsed CV. Continue?':'Esto reemplazará el contenido actual del editor con el CV analizado/parseado. ¿Continuar?';
+  if(!confirm(msg)) return;
+  const parsed=parseCvTextToState(txt);
+  S.p=Object.assign({},S.p,parsed.p); S.exp=parsed.exp; S.edu=parsed.edu; S.skills=parsed.skills.length?parsed.skills:S.skills; S.langs=parsed.langs.length?parsed.langs:S.langs; S.certs=parsed.certs.length?parsed.certs:S.certs; S.projs=parsed.projs.length?parsed.projs:S.projs;
+  snapshot(); renderAll(); persist();
+  toast('ok',S.lang==='en'?'CV sent to editor. Review and download.':'CV enviado al editor. Revísalo y descárgalo.');
+  setTopTab('edit');
+});
+
+document.getElementById('revUseMine').addEventListener('click',()=>{const txt=atsPlainText(); if(!txt.trim()){toast('er',S.lang==='en'?'Your CV is empty':'Tu CV está vacío'); return;} document.getElementById('revCv').value=txt; syncRevGutter(); toast('ok',S.lang==='en'?'CV loaded from editor':'CV cargado desde el editor'); runReviewAnalysis();});
 document.getElementById('revRun').addEventListener('click',runReviewAnalysis);
 function syncRevGutter(hiLine){
   const ta=document.getElementById('revCv'); const g=document.getElementById('revGutter'); if(!ta||!g) return;
