@@ -13,6 +13,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 <style>
 :root{--bg:#fff;--bg2:#f8fafc;--bg3:#f1f5f9;--sf:#fff;--sfh:#f1f5f9;--bd:#e2e8f0;--bds:#cbd5e1;--tx:#1e293b;--tx2:#475569;--tx3:#94a3b8;--txi:#fff;
 --pr:#4f46e5;--prh:#4338ca;--prl:#eef2ff;--prt:#312e81;--ok:#059669;--okl:#ecfdf5;--wn:#d97706;--er:#dc2626;--erl:#fef2f2;
@@ -182,7 +185,7 @@ body{font-family:var(--fs);font-size:.9rem;line-height:1.55;color:var(--tx);back
 .cv-ta .sk-grp .grp-v i{font-style:normal;background:var(--cvSK);color:var(--cvSKT);padding:1px 7px;border-radius:5px;font-size:.72rem;display:inline-block;margin:0 4px 4px 0}
 #cvpg.cv-ta{font-size:9.2pt;line-height:1.45}
 
-@media(max-width:900px){.layout{flex-direction:column}.editor{width:100%!important;max-width:none;border-right:0;border-bottom:1px solid var(--bd)}.resizer{display:none}.topbar{height:auto;padding:8px 12px;flex-wrap:wrap}.tabs{margin-left:0;order:3;width:100%;justify-content:center}.acts{order:4;width:100%;justify-content:center}#reviewPanel>div{grid-template-columns:1fr!important}}
+@media(max-width:900px){.layout{flex-direction:column}.editor{width:100%!important;max-width:none;border-right:0;border-bottom:1px solid var(--bd)}.resizer{display:none}.topbar{height:auto;padding:8px 12px;flex-wrap:wrap}.tabs{margin-left:0;order:3;width:100%;justify-content:center}.acts{order:4;width:100%;justify-content:center}#reviewPanel{padding:12px!important}#reviewPanel>div{grid-template-columns:1fr!important}}
 @media(max-width:600px){.g2{grid-template-columns:1fr}.sheet{width:100%;min-height:auto;zoom:1}#cvpg{padding:12mm}}
 @media print{
 html,body{height:auto!important;overflow:visible!important;background:#fff}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -266,20 +269,21 @@ html,body{height:auto!important;overflow:visible!important;background:#fff}*{-we
   <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
     <div style="display:flex;flex-direction:column;gap:12px">
       <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b style="font-family:var(--fh)">CV a revisar</b><label class="btn sm" style="cursor:pointer">📄 Cargar .txt<input type="file" id="revFile" accept=".txt,.md,.csv,.json" style="display:none"></label></div>
-        <textarea id="revCv" placeholder="Pega aquí el texto del CV (copiado desde PDF/Word/LinkedIn). Para mejor resultado, usa texto plano." style="width:100%;min-height:260px;resize:vertical;padding:10px;border:1px solid var(--bd);border-radius:var(--r1);font:13px/1.5 var(--fm);color:var(--tx)"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap"><b id="revTitleEl" style="font-family:var(--fh)">CV a revisar</b><label class="btn sm" style="cursor:pointer"><span id="revLoadEl">📄 Cargar CV</span><input type="file" id="revFile" accept=".txt,.md,.csv,.json,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none"></label></div>
+        <div id="revFileStatus" style="display:none;font-size:.75rem;color:var(--tx3);margin-bottom:8px"></div>
+        <textarea id="revCv" placeholder="Pega aquí el texto del CV…" style="width:100%;min-height:260px;resize:vertical;padding:10px;border:1px solid var(--bd);border-radius:var(--r1);font:13px/1.5 var(--fm);color:var(--tx)"></textarea>
       </div>
       <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px">
-        <b style="font-family:var(--fh);display:block;margin-bottom:10px">Oferta / palabras clave (opcional)</b>
-        <textarea id="revJd" placeholder="Pega la descripción de la oferta para comparar palabras clave…" style="width:100%;min-height:140px;resize:vertical;padding:10px;border:1px solid var(--bd);border-radius:var(--r1);font:13px/1.5 var(--fs);color:var(--tx)"></textarea>
-        <div style="display:flex;gap:8px;margin-top:10px">
+        <b id="revJdTitleEl" style="font-family:var(--fh);display:block;margin-bottom:10px">Oferta / palabras clave (opcional)</b>
+        <textarea id="revJd" placeholder="Pega la descripción de la oferta…" style="width:100%;min-height:140px;resize:vertical;padding:10px;border:1px solid var(--bd);border-radius:var(--r1);font:13px/1.5 var(--fs);color:var(--tx)"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
           <button class="btn pri" id="revRun">Analizar ATS</button>
           <button class="btn" id="revClear">Limpiar</button>
         </div>
       </div>
     </div>
     <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:16px;min-height:420px">
-      <b style="font-family:var(--fh);display:block;margin-bottom:12px">Resultado del análisis</b>
+      <b id="revResultEl" style="font-family:var(--fh);display:block;margin-bottom:12px">Resultado del análisis</b>
       <div id="revOut" style="font-size:.86rem;color:var(--tx2);line-height:1.5">
         <div style="color:var(--tx3)">Pega un CV y pulsa <b>Analizar ATS</b>. El análisis se hace localmente en tu navegador.</div>
       </div>
@@ -336,7 +340,17 @@ tip9:'Áreas de especialización del Technical Artist: shading, tools, pipeline,
 spc:'Nombre del área',spcD:'Detalle / tecnologías',addSpc:'+ Añadir especialización',spcS:'Especializaciones',skg:'Skills agrupados por categoría',reel:'Reel / Portafolio',
 meter:'Perfil completado',del:'Eliminar',sample:'Ejemplo cargado',saved:'Datos guardados',restored:'Sesión restaurada',reset:'Formulario borrado',imported:'Sesión importada',exported:'Exportando...',
 ph:'Ej. Diseñadora Senior',ph2:'Nombre de la empresa',ph3:'Ene 2022',ph4:'Actualidad',
-exp:'Experiencia',expP:'Experiencia profesional',eduS:'Educación',skills:'Habilidades',langs:'Idiomas',certS:'Certificaciones',pubs:'Publicaciones',projs:'Proyectos'},
+exp:'Experiencia',expP:'Experiencia profesional',eduS:'Educación',skills:'Habilidades',langs:'Idiomas',certS:'Certificaciones',pubs:'Publicaciones',projs:'Proyectos',
+revTitle:'CV a revisar',revLoad:'📄 Cargar CV',revPaste:'Pega aquí el texto del CV (copiado desde PDF/Word/LinkedIn). Para mejor resultado, usa texto plano o sube tu PDF/DOCX.',
+revJdTitle:'Oferta / palabras clave (opcional)',revJdPh:'Pega la descripción de la oferta para comparar palabras clave…',revRun:'Analizar ATS',revClear:'Limpiar',revResult:'Resultado del análisis',
+revEmpty:'Pega un CV y pulsa <b>Analizar ATS</b>. El análisis se hace localmente en tu navegador.',revNoIssues:'Sin problemas críticos detectados. Revisa coincidencia de keywords si pegaste una oferta.',
+revGood:'Buen pase ATS',revOk:'Pase parcial / mejorable',revBad:'Riesgo alto en ATS',revChars:'caracteres',revWords:'palabras',revLines:'líneas',
+revDetected:'Detectado',revNotDetected:'No detectado',revSecsFound:'Secciones detectadas',revNoSec:'Ninguna clara',revMissing:'Falta',revProblems:'Problemas detectados y cómo arreglarlos',
+revWhy:'Por qué',revHow:'Cómo arreglarlo',revManual:'Ajuste manual',revKwTitle:'Coincidencia con la oferta',revKwNone:'Pega una oferta para ver coincidencia de palabras clave.',
+revCopyMissing:'Copiar faltantes',revKwCopied:'Keywords copiadas',revLocal:'Análisis heurístico local. Un ATS real también puede fallar por columnas, tablas, imágenes, encabezados/pies o PDFs mal parseados. La prueba más fiel: pega el texto extraído del PDF.',
+revLoading:'Extrayendo texto del archivo…',revLoaded:'Archivo cargado',revLoadErr:'No se pudo leer el archivo',revPdfScan:'Este PDF parece escaneado o no contiene texto seleccionable. Necesita OCR o pega el texto manualmente.',
+revPasteFirst:'Pega primero el texto del CV',revTemplateTop:'Plantilla insertada al inicio',revTemplateAdd:'Plantilla añadida',revTemplateEnd:'Plantilla añadida al final',revCopied:'Copiado',
+revSevHigh:'Alta',revSevMed:'Media',revSevLow:'Baja',revBullets:'Viñetas',revDates:'Fechas'},
 en:{nombre:'Full name',titulo:'Job title',email:'Email',tel:'Phone',ubi:'Location',lin:'LinkedIn',port:'Portfolio',web:'GitHub / Portfolio',res:'Professional summary',
 puesto:'Position',emp:'Company',ini:'Start',fin:'End',desc:'Job description',ach:'Achievements (one per line)',grad:'Degree / Title',inst:'Institution',anio:'Year',
 sk:'Skills (comma separated)',lvl:'Level',cert:'Certification',emisor:'Issuer',pub:'Publication',fecha:'Date',proj:'Project',
@@ -348,7 +362,17 @@ tip9:'Technical Artist focus areas: shading, tools, pipeline, optimization, look
 spc:'Focus area name',spcD:'Detail / technologies',addSpc:'+ Add specialization',spcS:'Specializations',skg:'Skills grouped by category',reel:'Reel / Portfolio',
 meter:'Profile completed',del:'Delete',sample:'Sample loaded',saved:'Data saved',restored:'Session restored',reset:'Form cleared',imported:'Session imported',exported:'Exporting...',
 ph:'e.g. Senior Designer',ph2:'Company name',ph3:'Jan 2022',ph4:'Present',
-exp:'Experience',expP:'Professional Experience',eduS:'Education',skills:'Skills',langs:'Languages',certS:'Certifications',pubs:'Publications',projs:'Projects'}
+exp:'Experience',expP:'Professional Experience',eduS:'Education',skills:'Skills',langs:'Languages',certS:'Certifications',pubs:'Publications',projs:'Projects',
+revTitle:'CV to review',revLoad:'📄 Upload CV',revPaste:'Paste the CV text here (copied from PDF/Word/LinkedIn). For best results, use plain text or upload your PDF/DOCX.',
+revJdTitle:'Job posting / keywords (optional)',revJdPh:'Paste the job description to compare keywords…',revRun:'Analyze ATS',revClear:'Clear',revResult:'Analysis result',
+revEmpty:'Paste a CV and click <b>Analyze ATS</b>. Analysis runs locally in your browser.',revNoIssues:'No critical issues detected. Check keyword match if you pasted a job posting.',
+revGood:'Good ATS pass',revOk:'Partial / improvable pass',revBad:'High ATS risk',revChars:'characters',revWords:'words',revLines:'lines',
+revDetected:'Detected',revNotDetected:'Not detected',revSecsFound:'Detected sections',revNoSec:'None clear',revMissing:'Missing',revProblems:'Issues detected and how to fix them',
+revWhy:'Why',revHow:'How to fix',revManual:'Manual fix',revKwTitle:'Job match',revKwNone:'Paste a job posting to see keyword match.',
+revCopyMissing:'Copy missing',revKwCopied:'Keywords copied',revLocal:'Local heuristic analysis. A real ATS may also fail on columns, tables, images, headers/footers, or poorly parsed PDFs. The most faithful test: paste text extracted from the PDF.',
+revLoading:'Extracting text from file…',revLoaded:'File loaded',revLoadErr:'Could not read file',revPdfScan:'This PDF looks scanned or has no selectable text. It needs OCR, or paste the text manually.',
+revPasteFirst:'Paste the CV text first',revTemplateTop:'Template inserted at top',revTemplateAdd:'Template added',revTemplateEnd:'Template added at end',revCopied:'Copied',
+revSevHigh:'High',revSevMed:'Medium',revSevLow:'Low',revBullets:'Bullets',revDates:'Dates'}
 };
 
 let S={lang:'es',tpl:'ats',acc:'#6366f1',zoom:1,mode:'edit',docs:{},
@@ -402,7 +426,7 @@ function renderAll(){
   document.querySelectorAll('.lb').forEach(x=>x.classList.toggle('on',x.dataset.lang===S.lang));
   const lh=document.getElementById('langHint');
   if(lh)lh.textContent=S.lang==='en'?'English and Spanish are separate documents: editing here does not change the Spanish version.':'Español e English son documentos separados: editar aquí no cambia la versión en inglés.';
-  renderMeter(); renderForms(); renderCV();
+  renderMeter(); renderForms(); renderCV(); renderReviewPanel();
 }
 
 function renderMeter(){
@@ -713,7 +737,43 @@ function compareJD(){
 document.getElementById('atsCompare').addEventListener('click',compareJD);
 
 /* ========== REVISOR ATS EXTERNO ========== */
+const REV_LBL={
+  es:{secs:['Contacto','Resumen / Perfil','Experiencia','Educación','Habilidades'],
+    email:{t:'Falta email',w:'Los ATS y reclutadores necesitan un contacto directo; sin email tu CV puede descartarse.',f:'Añade un email profesional en el encabezado (ej. nombre.apellido@dominio.com).',a:'Insertar plantilla contacto',txt:'Nombre Apellido\nemail@ejemplo.com | +57 300 000 0000 | Ciudad, País\nlinkedin.com/in/tu-perfil | portfolio.com\n\n'},
+    phone:{t:'Falta teléfono',w:'Facilita el contacto rápido; muchos ATS extraen teléfono como campo obligatorio.',f:'Añade teléfono con código de país (ej. +57 300 000 0000).',a:'Copiar formato'},
+    sum:{t:'Falta resumen/perfil',w:'El resumen ayuda al reclutador y al ATS a entender tu rol objetivo en segundos.',f:'Añade 2-4 líneas con rol, años, stack clave y un logro medible.',a:'Insertar plantilla resumen',txt:'\nRESUMEN PROFESIONAL\nProfesional con X años de experiencia en [rol]. Especialista en [tecnologías clave]. Logro destacado: [métrica].\n'},
+    exp:{t:'Falta sección de experiencia',w:'La experiencia es la sección más evaluada por ATS y reclutadores.',f:'Añade una sección "EXPERIENCIA" con cargo, empresa, fechas y logros en viñetas.',a:'Insertar plantilla experiencia',txt:'\nEXPERIENCIA\nCargo — Empresa | Mes Año – Mes Año\n- Logro cuantificable con verbo de acción.\n- Responsabilidad/resultado clave.\n'},
+    edu:{t:'Falta sección de educación',w:'Muchos filtros ATS validan formación mínima.',f:'Añade "EDUCACIÓN" con título, institución y año.',a:'Insertar plantilla educación',txt:'\nEDUCACIÓN\nTítulo / Grado — Institución | Año\n'},
+    sk:{t:'Falta sección de habilidades',w:'Las skills son claves para el match ATS por palabras clave.',f:'Añade "HABILIDADES" con herramientas/tecnologías relevantes a la oferta.',a:'Insertar plantilla habilidades',txt:'\nHABILIDADES\nSkill 1, Skill 2, Skill 3, Skill 4\n'},
+    bullets:{t:'Pocas viñetas',w:'Los ATS y reclutadores escanean bullets; párrafos largos se saltan.',f:'Convierte responsabilidades/logros en viñetas que empiecen con verbo + métrica.',a:'Copiar ejemplo de bullets',txt:'- Lideré [proyecto] usando [tecnología], logrando [métrica].\n- Optimicé [proceso] reduciendo [tiempo/costo] en [X]%.\n- Implementé [solución] para [impacto medible].'},
+    dates:{t:'Pocas fechas detectadas',w:'Sin fechas claras, el ATS puede no construir tu cronología correctamente.',f:'Incluye formato consistente: "Ene 2022 – Actualidad" o "2022 – 2024".',a:'Copiar formato fechas',txt:'Ene 2022 – Actualidad'},
+    short:{t:'CV muy corto / texto mal extraído',w:'Si el texto es muy corto, el ATS puede estar leyendo mal tu PDF (columnas, imágenes, tablas).',f:'Exporta a PDF texto (no imagen), evita columnas, o pega el texto extraído para revisar.',a:'Copiar checklist extracción',txt:'Checklist: PDF con texto seleccionable, sin columnas/tablas, sin iconos como texto esencial, encabezado en el cuerpo (no header de Word), fuentes estándar.'},
+    long:{t:'CV muy largo',w:'CVs largos diluyen palabras clave y cansan al reclutador.',f:'Reduce a 1-2 páginas priorizando experiencia relevante y logros medibles.'},
+    cols:{t:'Posible maquetación en columnas/tablas',w:'Las columnas/tablas suelen leerse en orden incorrecto por ATS.',f:'Usa una sola columna, sin tablas para layout. Verifica pegando en Bloc de Notas.',a:'Copiar consejo',txt:'Convierte el CV a una sola columna, sin tablas, sin cajas de texto. Guarda como PDF desde Word/Google Docs con texto seleccionable.'},
+    chars:{t:'Caracteres/iconos inusuales',w:'Algunos ATS no interpretan iconos/emojis y pueden perder información.',f:'Reemplaza iconos por texto: "Email:", "Tel:", "LinkedIn:".'},
+    verbs:{t:'Pocos verbos de logro',w:'Sin verbos de acción, el impacto se ve débil para reclutadores y búsquedas ATS.',f:'Empieza bullets con: Lideré, Implementé, Optimicé, Reduje, Aumenté, Desarrollé.',a:'Copiar verbos',txt:'Lideré, Diseñé, Implementé, Optimicé, Reduje, Aumenté, Desarrollé, Automaticé, Integré, Entregué'},
+    kwMiss:(n)=>`Faltan ${n} palabras clave de la oferta`,kwWhy:'El ATS rankea por coincidencia de keywords; faltantes bajan tu puntaje.',kwFix:'Incorpora las keywords relevantes de forma natural en Resumen, Habilidades y logros (sin inventar experiencia).',kwAct:'Copiar keywords faltantes'
+  },
+  en:{secs:['Contact','Summary / Profile','Experience','Education','Skills'],
+    email:{t:'Missing email',w:'ATS systems and recruiters need a direct contact; without an email your CV may be discarded.',f:'Add a professional email in the header (e.g. name.lastname@domain.com).',a:'Insert contact template',txt:'Full Name\nemail@example.com | +1 555 000 0000 | City, Country\nlinkedin.com/in/your-profile | portfolio.com\n\n'},
+    phone:{t:'Missing phone',w:'Makes quick contact easier; many ATS systems extract phone as a required field.',f:'Add a phone number with country code (e.g. +1 555 000 0000).',a:'Copy format'},
+    sum:{t:'Missing summary/profile',w:'A summary helps recruiters and ATS understand your target role in seconds.',f:'Add 2-4 lines with role, years, key stack, and a measurable achievement.',a:'Insert summary template',txt:'\nPROFESSIONAL SUMMARY\nProfessional with X years of experience in [role]. Specialist in [key technologies]. Key achievement: [metric].\n'},
+    exp:{t:'Missing experience section',w:'Experience is the most evaluated section by ATS and recruiters.',f:'Add an "EXPERIENCE" section with role, company, dates, and bullet achievements.',a:'Insert experience template',txt:'\nEXPERIENCE\nRole — Company | Mon Year – Mon Year\n- Quantifiable achievement with action verb.\n- Key responsibility/result.\n'},
+    edu:{t:'Missing education section',w:'Many ATS filters validate minimum education.',f:'Add "EDUCATION" with degree, institution, and year.',a:'Insert education template',txt:'\nEDUCATION\nDegree / Title — Institution | Year\n'},
+    sk:{t:'Missing skills section',w:'Skills are key for ATS keyword matching.',f:'Add "SKILLS" with tools/technologies relevant to the job posting.',a:'Insert skills template',txt:'\nSKILLS\nSkill 1, Skill 2, Skill 3, Skill 4\n'},
+    bullets:{t:'Few bullet points',w:'ATS and recruiters scan bullets; long paragraphs get skipped.',f:'Convert responsibilities/achievements into bullets starting with verb + metric.',a:'Copy bullet examples',txt:'- Led [project] using [technology], achieving [metric].\n- Optimized [process] reducing [time/cost] by [X]%.\n- Implemented [solution] for [measurable impact].'},
+    dates:{t:'Few dates detected',w:'Without clear dates, ATS may not build your timeline correctly.',f:'Use a consistent format: "Jan 2022 – Present" or "2022 – 2024".',a:'Copy date format',txt:'Jan 2022 – Present'},
+    short:{t:'CV too short / poorly extracted text',w:'If the text is very short, ATS may be misreading your PDF (columns, images, tables).',f:'Export as text PDF (not image), avoid columns, or paste the extracted text to review.',a:'Copy extraction checklist',txt:'Checklist: selectable-text PDF, no columns/tables, no icons as essential text, header in body (not Word header), standard fonts.'},
+    long:{t:'CV too long',w:'Long CVs dilute keywords and tire recruiters.',f:'Reduce to 1-2 pages prioritizing relevant experience and measurable achievements.'},
+    cols:{t:'Possible column/table layout',w:'Columns/tables are often read in the wrong order by ATS.',f:'Use a single column, no layout tables. Verify by pasting into Notepad.',a:'Copy tip',txt:'Convert the CV to a single column, no tables, no text boxes. Save as PDF from Word/Google Docs with selectable text.'},
+    chars:{t:'Unusual characters/icons',w:'Some ATS do not interpret icons/emojis and may lose information.',f:'Replace icons with text: "Email:", "Phone:", "LinkedIn:".'},
+    verbs:{t:'Few achievement verbs',w:'Without action verbs, impact looks weak to recruiters and ATS searches.',f:'Start bullets with: Led, Implemented, Optimized, Reduced, Increased, Developed.',a:'Copy verbs',txt:'Led, Designed, Implemented, Optimized, Reduced, Increased, Developed, Automated, Integrated, Delivered'},
+    kwMiss:(n)=>`Missing ${n} job keywords`,kwWhy:'ATS ranks by keyword match; missing keywords lower your score.',kwFix:'Naturally incorporate relevant keywords in Summary, Skills, and achievements (without inventing experience).',kwAct:'Copy missing keywords'
+  }
+};
+
 function analyzeCvText(cvText, jdText){
+  const L=S.lang||'es'; const R=REV_LBL[L]||REV_LBL.es;
   const txt=(cvText||'').replace(/\r\n/g,'\n').trim();
   const low=txt.toLowerCase();
   const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
@@ -724,31 +784,33 @@ function analyzeCvText(cvText, jdText){
   const hasURL=/https?:\/\/|github\.com\/|portfolio|\.dev\b|\.com\b/i.test(txt);
   const bullets=lines.filter(l=>/^[-*•▪●◦–—]\s+/.test(l)).length;
   const dateHits=(txt.match(/\b(19|20)\d{2}\b|\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*(19|20)\d{2}\b/ig)||[]).length;
+  const secNames=R.secs;
   const sections=[
-    {k:'Contacto', ok:hasEmail||hasPhone},
-    {k:'Resumen / Perfil', ok:/\b(resumen|perfil|summary|profile|about|objetivo|objective)\b/i.test(txt)},
-    {k:'Experiencia', ok:/\b(experiencia|experience|employment|work history|trayectoria|laboral)\b/i.test(txt)},
-    {k:'Educación', ok:/\b(educaci[oó]n|education|formaci[oó]n|academic|universidad|degree)\b/i.test(txt)},
-    {k:'Habilidades', ok:/\b(habilidades|skills|competencias|tecnolog[ií]as|technologies|tools)\b/i.test(txt)},
+    {k:secNames[0], ok:hasEmail||hasPhone},
+    {k:secNames[1], ok:/\b(resumen|perfil|summary|profile|about|objetivo|objective)\b/i.test(txt)},
+    {k:secNames[2], ok:/\b(experiencia|experience|employment|work history|trayectoria|laboral)\b/i.test(txt)},
+    {k:secNames[3], ok:/\b(educaci[oó]n|education|formaci[oó]n|academic|universidad|degree)\b/i.test(txt)},
+    {k:secNames[4], ok:/\b(habilidades|skills|competencias|tecnolog[ií]as|technologies|tools)\b/i.test(txt)},
   ];
   const foundSecs=sections.filter(s=>s.ok);
   const missingSecs=sections.filter(s=>!s.ok);
 
   const issues=[];
-  const add=(sev,title,why,fix,action=null)=>issues.push({sev,title,why,fix,action});
-  if(!hasEmail) add('high','Falta email','Los ATS y reclutadores necesitan un contacto directo; sin email tu CV puede descartarse.','Añade un email profesional en el encabezado (ej. nombre.apellido@dominio.com).',{type:'insertTop',label:'Insertar plantilla contacto',text:'Nombre Apellido\nemail@ejemplo.com | +57 300 000 0000 | Ciudad, País\nlinkedin.com/in/tu-perfil | portfolio.com\n\n'});
-  if(!hasPhone) add('med','Falta teléfono','Facilita el contacto rápido; muchos ATS extraen teléfono como campo obligatorio.','Añade teléfono con código de país (ej. +57 300 000 0000).',{type:'copy',label:'Copiar formato',text:'+57 300 000 0000'});
-  if(missingSecs.find(s=>s.k==='Resumen / Perfil')) add('med','Falta resumen/perfil','El resumen ayuda al reclutador y al ATS a entender tu rol objetivo en segundos.','Añade 2-4 líneas con rol, años, stack clave y un logro medible.',{type:'insertAfterTop',label:'Insertar plantilla resumen',text:'\nRESUMEN PROFESIONAL\nProfesional con X años de experiencia en [rol]. Especialista en [tecnologías clave]. Logro destacado: [métrica].\n'});
-  if(missingSecs.find(s=>s.k==='Experiencia')) add('high','Falta sección de experiencia','La experiencia es la sección más evaluada por ATS y reclutadores.','Añade una sección "EXPERIENCIA" con cargo, empresa, fechas y logros en viñetas.',{type:'append',label:'Insertar plantilla experiencia',text:'\nEXPERIENCIA\nCargo — Empresa | Mes Año – Mes Año\n- Logro cuantificable con verbo de acción.\n- Responsabilidad/resultado clave.\n'});
-  if(missingSecs.find(s=>s.k==='Educación')) add('med','Falta sección de educación','Muchos filtros ATS validan formación mínima.','Añade "EDUCACIÓN" con título, institución y año.',{type:'append',label:'Insertar plantilla educación',text:'\nEDUCACIÓN\nTítulo / Grado — Institución | Año\n'});
-  if(missingSecs.find(s=>s.k==='Habilidades')) add('med','Falta sección de habilidades','Las skills son claves para el match ATS por palabras clave.','Añade "HABILIDADES" con herramientas/tecnologías relevantes a la oferta.',{type:'append',label:'Insertar plantilla habilidades',text:'\nHABILIDADES\nSkill 1, Skill 2, Skill 3, Skill 4\n'});
-  if(bullets<3) add('med','Pocas viñetas','Los ATS y reclutadores escanean bullets; párrafos largos se saltan.','Convierte responsabilidades/logros en viñetas que empiecen con verbo + métrica.',{type:'copy',label:'Copiar ejemplo de bullets',text:'- Lideré [proyecto] usando [tecnología], logrando [métrica].\n- Optimicé [proceso] reduciendo [tiempo/costo] en [X]%.\n- Implementé [solución] para [impacto medible].'});
-  if(dateHits<2) add('med','Pocas fechas detectadas','Sin fechas claras, el ATS puede no construir tu cronología correctamente.','Incluye formato consistente: "Ene 2022 – Actualidad" o "2022 – 2024".',{type:'copy',label:'Copiar formato fechas',text:'Ene 2022 – Actualidad'});
-  if(txt.length<400) add('high','CV muy corto / texto mal extraído','Si el texto es muy corto, el ATS puede estar leyendo mal tu PDF (columnas, imágenes, tablas).','Exporta a PDF texto (no imagen), evita columnas, o pega el texto extraído para revisar.',{type:'copy',label:'Copiar checklist extracción',text:'Checklist: PDF con texto seleccionable, sin columnas/tablas, sin iconos como texto esencial, encabezado en el cuerpo (no header de Word), fuentes estándar.'});
-  if(txt.length>12000) add('low','CV muy largo','CVs largos diluyen palabras clave y cansan al reclutador.','Reduce a 1-2 páginas priorizando experiencia relevante y logros medibles.',null);
-  if(/\t{2,}| {4,}\S+ {4,}/.test(txt)) add('high','Posible maquetación en columnas/tablas','Las columnas/tablas suelen leerse en orden incorrecto por ATS.','Usa una sola columna, sin tablas para layout. Verifica pegando en Bloc de Notas.',{type:'copy',label:'Copiar consejo',text:'Convierte el CV a una sola columna, sin tablas, sin cajas de texto. Guarda como PDF desde Word/Google Docs con texto seleccionable.'});
-  if(/[^\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/.test(txt)) add('low','Caracteres/iconos inusuales','Algunos ATS no interpretan iconos/emojis y pueden perder información.','Reemplaza iconos por texto: "Email:", "Tel:", "LinkedIn:".',null);
-  if(!/\b(logr|aument|reduj|implement|desarroll|lider|cre[eé]|optimi|mejor|achiev|increas|reduc|implement|develop|led|creat|optimi|improv)/i.test(txt)) add('med','Pocos verbos de logro','Sin verbos de acción, el impacto se ve débil para reclutadores y búsquedas ATS.','Empieza bullets con: Lideré, Implementé, Optimicé, Reduje, Aumenté, Desarrollé.',{type:'copy',label:'Copiar verbos',text:'Lideré, Diseñé, Implementé, Optimicé, Reduje, Aumenté, Desarrollé, Automaticé, Integré, Entregué'});
+  const add=(sev,it,action=null)=>issues.push({sev,title:it.t,why:it.w,fix:it.f,action:action===false?null:(action|| (it.a?{type:it.txt&&it.a.toLowerCase().includes('cop')?'copy':(it.a.toLowerCase().includes('inicio')||it.a.toLowerCase().includes('top')?'insertTop':(it.a.toLowerCase().includes('resumen')||it.a.toLowerCase().includes('summary')?'insertAfterTop':'append')),label:it.a,text:it.txt||''}:null))});
+  const simple=(sev,key,actType)=>{const it=R[key]; const act=it.a?{type:actType,label:it.a,text:it.txt||''}:null; issues.push({sev,title:it.t,why:it.w,fix:it.f,action:act});};
+  if(!hasEmail) simple('high','email','insertTop');
+  if(!hasPhone) simple('med','phone','copy');
+  if(missingSecs.find(s=>s.k===secNames[1])) simple('med','sum','insertAfterTop');
+  if(missingSecs.find(s=>s.k===secNames[2])) simple('high','exp','append');
+  if(missingSecs.find(s=>s.k===secNames[3])) simple('med','edu','append');
+  if(missingSecs.find(s=>s.k===secNames[4])) simple('med','sk','append');
+  if(bullets<3) simple('med','bullets','copy');
+  if(dateHits<2) simple('med','dates','copy');
+  if(txt.length<400) simple('high','short','copy');
+  if(txt.length>12000) simple('low','long',null);
+  if(/\t{2,}| {4,}\S+ {4,}/.test(txt)) simple('high','cols','copy');
+  if(/[^\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/.test(txt)) simple('low','chars',null);
+  if(!/\b(logr|aument|reduj|implement|desarroll|lider|cre[eé]|optimi|mejor|achiev|increas|reduc|implement|develop|led|creat|optimi|improv)/i.test(txt)) simple('med','verbs','copy');
 
   let keyword=null;
   const jd=(jdText||'').trim();
@@ -760,7 +822,7 @@ function analyzeCvText(cvText, jdText){
     const hits=top.filter(inCv), miss=top.filter(w=>!inCv(w));
     const total=top.length||1; const pct=Math.round(hits.length/total*100);
     keyword={pct,hits,miss,total};
-    if(miss.length) add('med',`Faltan ${miss.length} palabras clave de la oferta`,'El ATS rankea por coincidencia de keywords; faltantes bajan tu puntaje.','Incorpora las keywords relevantes de forma natural en Resumen, Habilidades y logros (sin inventar experiencia).',{type:'copy',label:'Copiar keywords faltantes',text:miss.join(', ')});
+    if(miss.length) issues.push({sev:'med',title:R.kwMiss(miss.length),why:R.kwWhy,fix:R.kwFix,action:{type:'copy',label:R.kwAct,text:miss.join(', ')}});
   }
 
   let score=0;
@@ -778,62 +840,126 @@ function analyzeCvText(cvText, jdText){
 function applyReviewAction(act){
   const ta=document.getElementById('revCv'); if(!ta||!act) return;
   const v=ta.value;
-  if(act.type==='insertTop'){ta.value=act.text + v.replace(/^\s+/,''); toast('ok','Plantilla insertada al inicio');}
-  else if(act.type==='insertAfterTop'){ta.value=v + (v.endsWith('\n')?'':'\n') + act.text; toast('ok','Plantilla añadida');}
-  else if(act.type==='append'){ta.value=v + (v.endsWith('\n')?'':'\n') + act.text; toast('ok','Plantilla añadida al final');}
-  else if(act.type==='copy'){navigator.clipboard?.writeText(act.text).then(()=>toast('ok','Copiado')).catch(()=>{const x=document.createElement('textarea');x.value=act.text;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();toast('ok','Copiado');});}
-  if(act.type!=='copy'){renderReview(analyzeCvText(ta.value, document.getElementById('revJd').value));}
+  if(act.type==='insertTop'){ta.value=act.text + v.replace(/^\s+/,''); toast('ok',t('revTemplateTop'));} 
+  else if(act.type==='insertAfterTop'){ta.value=v + (v.endsWith('\n')?'':'\n') + act.text; toast('ok',t('revTemplateAdd'));} 
+  else if(act.type==='append'){ta.value=v + (v.endsWith('\n')?'':'\n') + act.text; toast('ok',t('revTemplateEnd'));} 
+  else if(act.type==='copy'){navigator.clipboard?.writeText(act.text).then(()=>toast('ok',t('revCopied'))).catch(()=>{const x=document.createElement('textarea');x.value=act.text;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();toast('ok',t('revCopied'));});}
+  if(act.type!=='copy'){runReviewAnalysis();}
 }
 window._revActions=[];
+window._lastRev=null;
 function runReviewAction(i){const a=window._revActions[i]; if(a) applyReviewAction(a);}
 
 function renderReview(out){
   const r=out; const el=document.getElementById('revOut');
   const color=r.score>=75?'#059669':r.score>=50?'#d97706':'#dc2626';
-  const label=r.score>=75?'Buen pase ATS':r.score>=50?'Pase parcial / mejorable':'Riesgo alto en ATS';
+  const label=r.score>=75?t('revGood'):r.score>=50?t('revOk'):t('revBad');
   window._revActions=r.issues.map(i=>i.action).filter(Boolean);
-  const sevC={high:'#dc2626',med:'#d97706',low:'#2563eb'}; const sevB={high:'#fef2f2',med:'#fffbeb',low:'#eff6ff'}; const sevL={high:'Alta',med:'Media',low:'Baja'};
+  const sevC={high:'#dc2626',med:'#d97706',low:'#2563eb'}; const sevB={high:'#fef2f2',med:'#fffbeb',low:'#eff6ff'}; const sevL={high:t('revSevHigh'),med:t('revSevMed'),low:t('revSevLow')};
   const issuesHtml=r.issues.length?r.issues.map((it,idx)=>{
     const ai=r.issues.slice(0,idx+1).filter(x=>x.action).length-1;
-    const btn=it.action?`<button class="btn sm ${it.action.type==='copy'?'':'pri'}" onclick="runReviewAction(${ai})">${esc(it.action.label)}</button>`:'<span style="font-size:.72rem;color:var(--tx3)">Ajuste manual</span>';
+    const btn=it.action?`<button class="btn sm ${it.action.type==='copy'?'':'pri'}" onclick="runReviewAction(${ai})">${esc(it.action.label)}</button>`:`<span style="font-size:.72rem;color:var(--tx3)">${esc(t('revManual'))}</span>`;
     return `<div style="border:1px solid ${sevC[it.sev]}33;background:${sevB[it.sev]};border-radius:10px;padding:12px;margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b style="color:#0f172a;font-size:.86rem">${esc(it.title)}</b><span style="font-size:.68rem;font-weight:700;color:${sevC[it.sev]};white-space:nowrap">${sevL[it.sev]}</span></div>
-      <div style="font-size:.78rem;color:#475569;margin-top:4px"><b>Por qué:</b> ${esc(it.why)}</div>
-      <div style="font-size:.78rem;color:#0f172a;margin-top:4px"><b>Cómo arreglarlo:</b> ${esc(it.fix)}</div>
+      <div style="font-size:.78rem;color:#475569;margin-top:4px"><b>${esc(t('revWhy'))}:</b> ${esc(it.why)}</div>
+      <div style="font-size:.78rem;color:#0f172a;margin-top:4px"><b>${esc(t('revHow'))}:</b> ${esc(it.fix)}</div>
       <div style="margin-top:8px">${btn}</div>
     </div>`;
-  }).join(''):'<div style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;padding:10px;border-radius:8px">Sin problemas críticos detectados. Revisa coincidencia de keywords si pegaste una oferta.</div>';
+  }).join(''):`<div style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0;padding:10px;border-radius:8px">${esc(t('revNoIssues'))}</div>`;
 
   const kw=r.keyword?`
-    <div style="margin-top:14px"><b>Coincidencia con la oferta: ${r.keyword.pct}% (${r.keyword.hits.length}/${r.keyword.total})</b>
+    <div style="margin-top:14px"><b>${esc(t('revKwTitle'))}: ${r.keyword.pct}% (${r.keyword.hits.length}/${r.keyword.total})</b>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${r.keyword.hits.map(w=>`<span class="kw hit">✓ ${esc(w)}</span>`).join('')}${r.keyword.miss.map(w=>`<span class="kw miss">✗ ${esc(w)}</span>`).join('')}</div>
-      ${r.keyword.miss.length?`<div style="margin-top:8px"><button class="btn sm" onclick="navigator.clipboard.writeText(${JSON.stringify(r.keyword.miss.join(', '))}).then(()=>toast('ok','Keywords copiadas'))">Copiar faltantes</button></div>`:''}
-    </div>`:'<div style="margin-top:14px;color:var(--tx3)">Pega una oferta para ver coincidencia de palabras clave.</div>';
+      ${r.keyword.miss.length?`<div style="margin-top:8px"><button class="btn sm" onclick="navigator.clipboard.writeText(${JSON.stringify(r.keyword.miss.join(', '))}).then(()=>toast('ok','${esc(t('revKwCopied'))}'))">${esc(t('revCopyMissing'))}</button></div>`:''}
+    </div>`:`<div style="margin-top:14px;color:var(--tx3)">${esc(t('revKwNone'))}</div>`;
 
+  const loc=(S.lang==='en')?'en-US':'es-CO';
   el.innerHTML=`
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
       <div style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font:700 1.2rem var(--fh);color:${color};background:${color}14;border:3px solid ${color}">${r.score}</div>
-      <div><div style="font:700 1rem var(--fh);color:${color}">${label}</div><div style="font-size:.78rem;color:var(--tx3)">${r.chars.toLocaleString('es-CO')} caracteres · ${r.words.toLocaleString('es-CO')} palabras · ${r.lines} líneas</div></div>
+      <div><div style="font:700 1rem var(--fh);color:${color}">${label}</div><div style="font-size:.78rem;color:var(--tx3)">${r.chars.toLocaleString(loc)} ${esc(t('revChars'))} · ${r.words.toLocaleString(loc)} ${esc(t('revWords'))} · ${r.lines} ${esc(t('revLines'))}</div></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
-      ${[['Email',r.hasEmail],['Teléfono',r.hasPhone],['LinkedIn',r.hasLinkedIn],['URL/Portfolio',r.hasURL],['Viñetas',r.bullets>0?r.bullets:false],['Fechas',r.dateHits>0?r.dateHits:false]].map(([k,v])=>`<div style="padding:8px;border:1px solid var(--bd);border-radius:8px;background:${v?'#ecfdf5':'#fef2f2'}"><div style="font-size:.72rem;color:var(--tx3)">${k}</div><div style="font-weight:600;color:${v?'#047857':'#b91c1c'}">${v===true?'Detectado':v===false?'No detectado':v}</div></div>`).join('')}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:14px">
+      ${[['Email',r.hasEmail],['Teléfono',r.hasPhone],['LinkedIn',r.hasLinkedIn],['URL/Portfolio',r.hasURL],[t('revBullets')|| (S.lang==='en'?'Bullets':'Viñetas'),r.bullets>0?r.bullets:false],[t('revDates')||(S.lang==='en'?'Dates':'Fechas'),r.dateHits>0?r.dateHits:false]].map(([k,v])=>`<div style="padding:8px;border:1px solid var(--bd);border-radius:8px;background:${v?'#ecfdf5':'#fef2f2'}"><div style="font-size:.72rem;color:var(--tx3)">${esc(k)}</div><div style="font-weight:600;color:${v?'#047857':'#b91c1c'}">${v===true?esc(t('revDetected')):v===false?esc(t('revNotDetected')):v}</div></div>`).join('')}
     </div>
-    <div style="margin-bottom:12px"><b>Secciones detectadas</b><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${r.foundSecs.map(s=>`<span class="kw hit">✓ ${s.k}</span>`).join('')||'<span class="kw miss">Ninguna clara</span>'}${r.missingSecs.map(s=>`<span class="kw miss">Falta ${s.k}</span>`).join('')}</div></div>
-    <div style="margin-bottom:8px"><b>Problemas detectados y cómo arreglarlos</b></div>
+    <div style="margin-bottom:12px"><b>${esc(t('revSecsFound'))}</b><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${r.foundSecs.map(s=>`<span class="kw hit">✓ ${esc(s.k)}</span>`).join('')||`<span class="kw miss">${esc(t('revNoSec'))}</span>`}${r.missingSecs.map(s=>`<span class="kw miss">${esc(t('revMissing'))} ${esc(s.k)}</span>`).join('')}</div></div>
+    <div style="margin-bottom:8px"><b>${esc(t('revProblems'))}</b></div>
     ${issuesHtml}
     ${kw}
-    <div style="margin-top:14px;padding:10px;background:#f8fafc;border:1px solid var(--bd);border-radius:8px;font-size:.76rem;color:var(--tx3)">Análisis heurístico local. Un ATS real también puede fallar por columnas, tablas, imágenes, encabezados/pies o PDFs mal parseados. La prueba más fiel: pega el texto extraído del PDF.</div>`;
+    <div style="margin-top:14px;padding:10px;background:#f8fafc;border:1px solid var(--bd);border-radius:8px;font-size:.76rem;color:var(--tx3)">${esc(t('revLocal'))}</div>`;
 }
 
-document.getElementById('revRun').addEventListener('click',()=>{
+function runReviewAnalysis(){
   const cv=document.getElementById('revCv').value;
-  if(!cv.trim()){toast('er','Pega primero el texto del CV'); return;}
-  renderReview(analyzeCvText(cv, document.getElementById('revJd').value));
-});
-document.getElementById('revClear').addEventListener('click',()=>{document.getElementById('revCv').value=''; document.getElementById('revJd').value=''; window._revActions=[]; document.getElementById('revOut').innerHTML='<div style="color:var(--tx3)">Pega un CV y pulsa <b>Analizar ATS</b>. El análisis se hace localmente en tu navegador.</div>';});
-document.getElementById('revFile').addEventListener('change',e=>{
+  const jd=document.getElementById('revJd').value;
+  if(!cv.trim()){toast('er',t('revPasteFirst')); return null;}
+  window._lastRev={cv,jd};
+  const out=analyzeCvText(cv,jd);
+  renderReview(out);
+  return out;
+}
+function renderReviewPanel(){
+  const set=(id,val,html)=>{const el=document.getElementById(id); if(!el) return; if(html) el.innerHTML=val; else el.textContent=val;};
+  set('revTitleEl',t('revTitle')); set('revLoadEl',t('revLoad')); set('revJdTitleEl',t('revJdTitle')); set('revResultEl',t('revResult'));
+  set('revRun',t('revRun')); set('revClear',t('revClear'));
+  const cv=document.getElementById('revCv'); if(cv) cv.placeholder=t('revPaste');
+  const jd=document.getElementById('revJd'); if(jd) jd.placeholder=t('revJdPh');
+  if(window._lastRev){ renderReview(analyzeCvText(window._lastRev.cv, window._lastRev.jd)); }
+  else { const out=document.getElementById('revOut'); if(out) out.innerHTML=`<div style="color:var(--tx3)">${t('revEmpty')}</div>`; }
+}
+
+document.getElementById('revRun').addEventListener('click',runReviewAnalysis);
+document.getElementById('revClear').addEventListener('click',()=>{document.getElementById('revCv').value=''; document.getElementById('revJd').value=''; window._revActions=[]; window._lastRev=null; document.getElementById('revOut').innerHTML=`<div style="color:var(--tx3)">${t('revEmpty')}</div>`;});
+
+async function extractTextFromFile(file){
+  const name=(file.name||'').toLowerCase();
+  const status=document.getElementById('revFileStatus');
+  const show=(msg,err)=>{if(status){status.style.display='block'; status.style.color=err?'#b91c1c':'var(--tx3)'; status.textContent=msg;}};
+  show(t('revLoading'));
+  try{
+    if(name.endsWith('.pdf')||file.type==='application/pdf'){
+      if(!window.pdfjsLib) throw new Error('PDF.js no disponible');
+      const buf=await file.arrayBuffer();
+      const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+      let full='';
+      for(let i=1;i<=pdf.numPages;i++){
+        const page=await pdf.getPage(i);
+        const content=await page.getTextContent();
+        const items=content.items.map(it=>{const tr=it.transform||[1,0,0,1,0,0]; return {str:it.str||'',x:tr[4],y:tr[5],h:Math.abs(tr[3])||it.height||10};}).filter(it=>it.str && it.str.trim());
+        items.sort((a,b)=>{const dy=b.y-a.y; if(Math.abs(dy)>3) return dy; return a.x-b.x;});
+        let lines=[], line=[], lastY=null, lastX=null;
+        for(const it of items){
+          if(lastY!==null && Math.abs(it.y-lastY)>Math.max(3,(it.h||10)*0.6)){lines.push(line); line=[]; lastX=null;}
+          if(lastX!==null && (it.x-lastX)>60) line.push(' | ');
+          line.push(it.str);
+          lastY=it.y; lastX=it.x + (it.width||it.str.length*(it.h*0.5)||0);
+        }
+        if(line.length) lines.push(line);
+        full += lines.map(l=>l.join('').replace(/\s+\|\s+/g,' | ').replace(/\s{2,}/g,' ').trim()).filter(Boolean).join('\n') + '\n\n';
+      }
+      const text=full.replace(/\n{3,}/g,'\n\n').trim();
+      if(text.length<40) show(t('revPdfScan'),true); else show(file.name+' — '+text.length.toLocaleString(S.lang==='en'?'en-US':'es-CO')+' '+t('revChars'));
+      return text;
+    }
+    if(name.endsWith('.docx')||file.type==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'){
+      if(!window.mammoth) throw new Error('Mammoth no disponible');
+      const buf=await file.arrayBuffer();
+      const res=await mammoth.extractRawText({arrayBuffer:buf});
+      const text=(res.value||'').replace(/\n{3,}/g,'\n\n').trim();
+      show(file.name+' — '+text.length.toLocaleString(S.lang==='en'?'en-US':'es-CO')+' '+t('revChars'));
+      return text;
+    }
+    const text=await file.text();
+    show(file.name);
+    return String(text||'');
+  }catch(err){ console.error(err); show(t('revLoadErr')+': '+(err.message||err),true); toast('er',t('revLoadErr')); return null; }
+}
+
+document.getElementById('revFile').addEventListener('change',async e=>{
   const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=ev=>{document.getElementById('revCv').value=String(ev.target.result||''); toast('ok','Archivo cargado');}; r.readAsText(f); e.target.value='';
+  const text=await extractTextFromFile(f);
+  if(text!=null){ document.getElementById('revCv').value=text; toast('ok',t('revLoaded')); }
+  e.target.value='';
 });
 
 function loadSample(){
