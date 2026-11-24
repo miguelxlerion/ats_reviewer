@@ -1,0 +1,4 @@
+.qa/chrome-profile*/
+.qa/legacy/
+*.pdf
+.wrangler/
