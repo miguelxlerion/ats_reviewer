@@ -776,10 +776,23 @@ function revLineAt(txt,idx){let l=1; for(let i=0;i<idx&&i<txt.length;i++) if(txt
 function revSnippet(txt,idx,len){const s=Math.max(0,idx-28), e=Math.min(txt.length,idx+len+28); return (s>0?'…':'')+txt.slice(s,e).replace(/\s+/g,' ').trim()+(e<txt.length?'…':'');}
 function revGoto(index,length){
   const ta=document.getElementById('revCv'); if(!ta) return;
-  ta.focus(); const i=Math.max(0,Math.min(index||0,ta.value.length)); const j=Math.max(i,Math.min(i+(length||0),ta.value.length));
+  if(/\r\n/.test(ta.value)) ta.value=ta.value.replace(/\r\n/g,'\n');
+  const val=ta.value||'';
+  const i=Math.max(0,Math.min(index||0,val.length));
+  const j=Math.max(i,Math.min(i+(length||0),val.length));
+  ta.focus();
   try{ta.setSelectionRange(i,j);}catch(_){}
-  const before=ta.value.slice(0,i); const lineH=parseFloat(getComputedStyle(ta).lineHeight)||20; const lines=before.split('\n').length;
-  ta.scrollTop=Math.max(0,(lines-3)*lineH);
+  try{ta.blur(); ta.focus(); ta.setSelectionRange(i,j);}catch(_){}
+  const before=val.slice(0,i);
+  const lineH=parseFloat(getComputedStyle(ta).lineHeight)||20;
+  const line=before.split('\n').length;
+  const target=Math.max(0,(line-3)*lineH);
+  // ensure the textarea itself is visible (mobile/scroll containers)
+  const r=ta.getBoundingClientRect();
+  const vh=window.innerHeight||document.documentElement.clientHeight;
+  if(r.bottom>vh || r.top<0) ta.scrollIntoView({block:'center',behavior:'smooth'});
+  requestAnimationFrame(()=>{ta.scrollTop=target; try{ta.setSelectionRange(i,j);}catch(_){}});
+  setTimeout(()=>{ta.scrollTop=target; try{ta.setSelectionRange(i,j);}catch(_){}},60);
 }
 function revRemove(index,length){
   const ta=document.getElementById('revCv'); if(!ta) return;
@@ -801,7 +814,10 @@ function revReplace(index,length,current){
 
 function analyzeCvText(cvText, jdText){
   const L=S.lang||'es'; const R=REV_LBL[L]||REV_LBL.es;
-  const txt=(cvText||'').replace(/\r\n/g,'\n').trim();
+  const raw=(cvText||'').replace(/\r\n/g,'\n');
+  const lead=(raw.match(/^\s*/)||[''])[0].length;
+  const txt=raw.trim();
+  const off=(i)=>i+lead;
   const low=txt.toLowerCase();
   const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
   const words=(low.match(/[a-záéíóúüñ0-9+#.]{2,}/g)||[]);
@@ -811,10 +827,10 @@ function analyzeCvText(cvText, jdText){
   const hasLinkedIn=/linkedin\.com\/in\//i.test(txt);
   const hasURL=/https?:\/\/|github\.com\/|portfolio|\.dev\b|\.com\b/i.test(txt);
   const bulletRe=/^[-*•▪●◦–—]\s+/;
-  const bulletLines=[]; txt.split('\n').forEach((ln,i)=>{if(bulletRe.test(ln.trim())) bulletLines.push({line:i+1,text:ln.trim(),index:txt.indexOf(ln)});});
+  const bulletLines=[]; {let pos=0; txt.split('\n').forEach((ln,i)=>{if(bulletRe.test(ln.trim())) bulletLines.push({line:i+1,text:ln.trim(),index:off(pos)}); pos+=ln.length+1;});}
   const bullets=bulletLines.length;
   const dateRe=/\b(19|20)\d{2}\b|\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*(19|20)\d{2}\b/ig;
-  const dateMatches=[]; let dm; while((dm=dateRe.exec(txt))){dateMatches.push({text:dm[0],index:dm.index,length:dm[0].length,line:revLineAt(txt,dm.index)}); if(dateMatches.length>20) break;}
+  const dateMatches=[]; let dm; while((dm=dateRe.exec(txt))){dateMatches.push({text:dm[0],index:off(dm.index),length:dm[0].length,line:revLineAt(txt,dm.index)}); if(dateMatches.length>20) break;}
   const dateHits=dateMatches.length;
   const secNames=R.secs;
   const sections=[
@@ -830,29 +846,29 @@ function analyzeCvText(cvText, jdText){
   const ev=(index,length,note)=>({index:Math.max(0,index||0),length:Math.max(0,length||0),text:txt.slice(Math.max(0,index||0),Math.max(0,index||0)+Math.max(0,length||0)),note:note||''});
   const simple=(sev,key,actType,extra)=>{const it=R[key]; const act=it.a?{type:actType,label:it.a,text:it.txt||'',...(extra||{})}:null; issues.push({sev,title:it.t,why:it.w,fix:it.f,action:act,evidence:(extra&&extra.evidence)||[]});};
 
-  if(!hasEmail){ const it=R.email; issues.push({sev:'high',title:it.t,why:it.w,fix:it.f,action:{type:'insertTop',label:it.a,text:it.txt},evidence:[{index:0,length:Math.min(txt.length,80),text:txt.slice(0,80),note:L==='en'?'Searched the whole CV: no email pattern found.':'Busqué en todo el CV: no encontré un patrón de email.'}]}); }
-  if(!hasPhone){ const it=R.phone; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:'+57 300 000 0000'},evidence:[{index:0,length:Math.min(txt.length,80),text:txt.slice(0,80),note:L==='en'?'Searched the whole CV: no phone pattern found.':'Busqué en todo el CV: no encontré un patrón de teléfono.'}]}); }
-  const missingSec=(name,key,actType)=>{ const it=R[key]; const idx=0; issues.push({sev:key==='exp'?'high':'med',title:it.t,why:it.w,fix:it.f,action:{type:actType,label:it.a,text:it.txt},evidence:[{index:idx,length:Math.min(txt.length,120),text:txt.slice(0,120),note:(L==='en'?`Section not detected: "${name}". I checked common headings.`:`No se detectó la sección: "${name}". Revisé encabezados comunes.`)}]}); };
+  if(!hasEmail){ const it=R.email; issues.push({sev:'high',title:it.t,why:it.w,fix:it.f,action:{type:'insertTop',label:it.a,text:it.txt},evidence:[{index:off(0),length:Math.min(txt.length,80),text:txt.slice(0,80),note:L==='en'?'Searched the whole CV: no email pattern found.':'Busqué en todo el CV: no encontré un patrón de email.'}]}); }
+  if(!hasPhone){ const it=R.phone; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:'+57 300 000 0000'},evidence:[{index:off(0),length:Math.min(txt.length,80),text:txt.slice(0,80),note:L==='en'?'Searched the whole CV: no phone pattern found.':'Busqué en todo el CV: no encontré un patrón de teléfono.'}]}); }
+  const missingSec=(name,key,actType)=>{ const it=R[key]; issues.push({sev:key==='exp'?'high':'med',title:it.t,why:it.w,fix:it.f,action:{type:actType,label:it.a,text:it.txt},evidence:[{index:off(0),length:Math.min(txt.length,120),text:txt.slice(0,120),note:(L==='en'?`Section not detected: "${name}". I checked common headings.`:`No se detectó la sección: "${name}". Revisé encabezados comunes.`)}]}); };
   if(missingSecs.find(s=>s.k===secNames[1])) missingSec(secNames[1],'sum','insertAfterTop');
   if(missingSecs.find(s=>s.k===secNames[2])) missingSec(secNames[2],'exp','append');
   if(missingSecs.find(s=>s.k===secNames[3])) missingSec(secNames[3],'edu','append');
   if(missingSecs.find(s=>s.k===secNames[4])) missingSec(secNames[4],'sk','append');
 
-  if(bullets<3){ const it=R.bullets; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:0,length:0,text:'',note:(L==='en'?`Found ${bullets} bullet lines in the whole CV. Expected at least 3.`:`Encontré ${bullets} viñetas en todo el CV. Se esperan al menos 3.`)},...bulletLines.slice(0,5).map(b=>({index:b.index,length:b.text.length,text:b.text,note:(L==='en'?`Bullet at line ${b.line}`:`Viñeta en línea ${b.line}`)}))]}); }
+  if(bullets<3){ const it=R.bullets; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:off(0),length:0,text:'',note:(L==='en'?`Found ${bullets} bullet lines in the whole CV. Expected at least 3.`:`Encontré ${bullets} viñetas en todo el CV. Se esperan al menos 3.`)},...bulletLines.slice(0,5).map(b=>({index:b.index,length:b.text.length,text:b.text,note:(L==='en'?`Bullet at line ${b.line}`:`Viñeta en línea ${b.line}`)}))]}); }
 
-  if(dateHits<2){ const it=R.dates; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:0,length:0,text:'',note:(L==='en'?`Found ${dateHits} date(s). ATS usually needs clear start/end dates.`:`Encontré ${dateHits} fecha(s). El ATS suele necesitar fechas claras de inicio/fin.`)},...dateMatches.slice(0,6).map(d=>({index:d.index,length:d.length,text:d.text,note:(L==='en'?`Date at line ${d.line}`:`Fecha en línea ${d.line}`)}))]}); }
+  if(dateHits<2){ const it=R.dates; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:off(0),length:0,text:'',note:(L==='en'?`Found ${dateHits} date(s). ATS usually needs clear start/end dates.`:`Encontré ${dateHits} fecha(s). El ATS suele necesitar fechas claras de inicio/fin.`)},...dateMatches.slice(0,6).map(d=>({index:d.index,length:d.length,text:d.text,note:(L==='en'?`Date at line ${d.line}`:`Fecha en línea ${d.line}`)}))]}); }
 
-  if(txt.length<400){ const it=R.short; issues.push({sev:'high',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:0,length:Math.min(txt.length,160),text:txt.slice(0,160),note:(L==='en'?`Extracted text length is only ${txt.length} characters.`:`El texto extraído tiene solo ${txt.length} caracteres.`)}]}); }
-  if(txt.length>12000){ const it=R.long; issues.push({sev:'low',title:it.t,why:it.w,fix:it.f,action:null,evidence:[{index:0,length:0,text:'',note:(L==='en'?`Text length: ${txt.length} characters.`:`Longitud del texto: ${txt.length} caracteres.`)}]}); }
+  if(txt.length<400){ const it=R.short; issues.push({sev:'high',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:off(0),length:Math.min(txt.length,160),text:txt.slice(0,160),note:(L==='en'?`Extracted text length is only ${txt.length} characters.`:`El texto extraído tiene solo ${txt.length} caracteres.`)}]}); }
+  if(txt.length>12000){ const it=R.long; issues.push({sev:'low',title:it.t,why:it.w,fix:it.f,action:null,evidence:[{index:off(0),length:0,text:'',note:(L==='en'?`Text length: ${txt.length} characters.`:`Longitud del texto: ${txt.length} caracteres.`)}]}); }
 
-  const colLines=[]; txt.split('\n').forEach((ln,i)=>{if(/\t{2,}| {4,}\S+ {4,}/.test(ln)) colLines.push({line:i+1,text:ln.trim().slice(0,140),index:txt.indexOf(ln)});});
-  if(colLines.length){ const it=R.cols; issues.push({sev:'high',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:colLines.slice(0,6).map(c=>({index:c.index,length:Math.min(c.text.length,140),text:c.text,note:(L==='en'?`Possible column/table at line ${c.line}`:`Posible columna/tabla en línea ${c.line}`)}))}); }
+  const colLines=[]; {let pos=0; txt.split('\n').forEach((ln,i)=>{if(/\t{2,}| {4,}\S+ {4,}/.test(ln)) colLines.push({line:i+1,text:ln.trim().slice(0,140),index:off(pos),raw:ln}); pos+=ln.length+1;});}
+  if(colLines.length){ const it=R.cols; issues.push({sev:'high',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:colLines.slice(0,6).map(c=>({index:c.index,length:Math.min(c.raw.length,140),text:c.text,note:(L==='en'?`Possible column/table at line ${c.line}`:`Posible columna/tabla en línea ${c.line}`)}))}); }
 
-  const weird=[]; const weirdRe=/[^\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/g; let wm; while((wm=weirdRe.exec(txt))){weird.push({ch:wm[0],index:wm.index,line:revLineAt(txt,wm.index)}); if(weird.length>12) break;}
+  const weird=[]; const weirdRe=/[^\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/g; let wm; while((wm=weirdRe.exec(txt))){weird.push({ch:wm[0],index:off(wm.index),line:revLineAt(txt,wm.index)}); if(weird.length>12) break;}
   if(weird.length){ const it=R.chars; issues.push({sev:'low',title:it.t,why:it.w,fix:it.f,action:null,evidence:weird.slice(0,8).map(w=>({index:w.index,length:1,text:w.ch,note:(L==='en'?`Unusual char "${w.ch}" at line ${w.line}`:`Carácter inusual "${w.ch}" en línea ${w.line}`)}))}); }
 
   const hasVerbs=/\b(logr|aument|reduj|implement|desarroll|lider|cre[eé]|optimi|mejor|achiev|increas|reduc|implement|develop|led|creat|optimi|improv)/i.test(txt);
-  if(!hasVerbs){ const it=R.verbs; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:0,length:Math.min(txt.length,120),text:txt.slice(0,120),note:(L==='en'?'No common achievement verbs found.':'No encontré verbos de logro comunes.')} ]}); }
+  if(!hasVerbs){ const it=R.verbs; issues.push({sev:'med',title:it.t,why:it.w,fix:it.f,action:{type:'copy',label:it.a,text:it.txt},evidence:[{index:off(0),length:Math.min(txt.length,120),text:txt.slice(0,120),note:(L==='en'?'No common achievement verbs found.':'No encontré verbos de logro comunes.')} ]}); }
 
   let keyword=null;
   const jd=(jdText||'').trim();
@@ -945,6 +961,7 @@ function renderReview(out){
 }
 
 function runReviewAnalysis(){
+  const ta=document.getElementById('revCv'); if(ta && /\r\n/.test(ta.value)) ta.value=ta.value.replace(/\r\n/g,'\n');
   const cv=document.getElementById('revCv').value;
   const jd=document.getElementById('revJd').value;
   if(!cv.trim()){toast('er',t('revPasteFirst')); return null;}
